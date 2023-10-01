@@ -1,13 +1,14 @@
 package migrate
 
 import (
+	"github.com/luyasr/mpush/app/token"
 	"github.com/luyasr/mpush/app/user"
 	"github.com/luyasr/mpush/config"
 )
 
 func AutoMigrate() {
 	db := config.C.Mysql.GetConn()
-	err := db.AutoMigrate(&user.User{})
+	err := db.AutoMigrate(&user.User{}, &token.Token{})
 	if err != nil {
 		panic(err)
 	}

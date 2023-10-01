@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/luyasr/mpush/app/channel"
+	"github.com/luyasr/mpush/app/message"
 	"net/http"
 	"strings"
 	"time"
@@ -35,7 +36,7 @@ type dingMessageResponse struct {
 	Message string `json:"message"`
 }
 
-func newDingMessageRequest(message *channel.Message) *dingMessageRequest {
+func newDingMessageRequest(message *message.Message) *dingMessageRequest {
 	req := &dingMessageRequest{}
 	if message.Text == "" {
 		req.MsgType = "text"
@@ -57,7 +58,7 @@ func newDingMessageRequest(message *channel.Message) *dingMessageRequest {
 	return req
 }
 
-func SendDingMessage(message *channel.Message, channel_ *channel.Channel) error {
+func SendDingMessage(message *message.Message, channel_ *channel.Channel) error {
 	messageRequest := newDingMessageRequest(message)
 	timestamp := time.Now().UnixMilli()
 	sign := dingSign(channel_.Secret, timestamp)

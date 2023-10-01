@@ -37,10 +37,7 @@ type Mysql struct {
 }
 
 type Log struct {
-	Dir        string `json:"dir"`
-	MaxSize    int    `json:"maxsize"`
-	MaxBackups int    `json:"maxbackups"`
-	Compress   bool   `json:"compress"`
+	Dir string `json:"dir"`
 }
 
 func rootPath() string {

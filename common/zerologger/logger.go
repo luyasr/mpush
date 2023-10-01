@@ -10,6 +10,8 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"os"
+	"path"
+	"runtime"
 	"runtime/debug"
 	"strings"
 	"time"
@@ -46,12 +48,18 @@ func console() zerolog.ConsoleWriter {
 	return output
 }
 
+func rootPath() string {
+	_, filename, _, _ := runtime.Caller(0)
+	root := path.Dir(path.Dir(path.Dir(filename)))
+	return root
+}
+
 func file(name string) *os.File {
 	var err error
 	var dir string
 	if config.C.Log.Dir == "" {
-		err = os.MkdirAll(fmt.Sprintf("log/%s", name), os.ModePerm)
-		dir = "log"
+		err = os.MkdirAll(fmt.Sprintf("%s/log/%s", rootPath(), name), os.ModePerm)
+		dir = fmt.Sprintf("%s/log", rootPath())
 	} else {
 		err = os.MkdirAll(fmt.Sprintf("%s/%s", config.C.Log.Dir, name), os.ModePerm)
 		dir = config.C.Log.Dir

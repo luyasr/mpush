@@ -32,19 +32,19 @@ func NewService() *Service {
 
 func (s *Service) Create(ctx context.Context, req *CreateUserRequest) (*User, error) {
 	var user User
-	// verify user create request
+	// 校验创建用户请求
 	err := validate.Struct(req)
 	if err != nil {
 		return nil, err
 	}
-	// instantiate
+	// 用户实例化
 	user.Username = req.Username
 	user.Password = utils.PasswordHash(req.Password)
 	user.Nickname = req.Username
 	user.Email = req.Email
 	user.Role = RoleMember
 
-	// check if the user exists
+	// 检查用户是否存在
 	byUsername, _ := s.GetByUsername(ctx, user.Username)
 	if byUsername != nil {
 		return nil, errs.NewExists("创建用户失败,用户%s已存在", user.Username)
@@ -72,13 +72,14 @@ func (s *Service) DeleteById(ctx context.Context, id int64) error {
 
 func (s *Service) Update(ctx context.Context, id int64, req *UpdateUserRequest) error {
 	var user User
-	// verify user delete request
+	// 校验用户更新请求
 	err := validate.Struct(req)
 	if err != nil {
 		return err
 	}
 	user.Id = id
 
+	// 如果用户更新请求包含名称和昵称, 先校验是否存在
 	if req.Username != "" {
 		byUsername, _ := s.GetByUsername(ctx, req.Username)
 		if byUsername != nil {
@@ -92,6 +93,7 @@ func (s *Service) Update(ctx context.Context, id int64, req *UpdateUserRequest) 
 		}
 	}
 
+	// 多列更新, 只更新非零字段
 	fields, err := utils.UpdateNoneZeroFields(req)
 	if err != nil {
 		return err

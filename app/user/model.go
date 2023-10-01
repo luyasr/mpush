@@ -2,16 +2,19 @@ package user
 
 import (
 	"encoding/json"
-	"github.com/luyasr/mpush/common"
+	"gorm.io/plugin/soft_delete"
 )
 
 type User struct {
-	common.Meta
-	Username string `json:"username" gorm:"not null;uniqueIndex;type:varchar(20)"`
-	Password string `json:"password" gorm:"not null;type:varchar(255)"`
-	Nickname string `json:"nickname" gorm:"not null;uniqueIndex;type:varchar(20)"`
-	Email    string `json:"email" gorm:"type:varchar(50)"`
-	Role     Role   `json:"role" gorm:"not null;type:tinyint"`
+	Id        int64                 `json:"id" gorm:"primaryKey"`
+	Username  string                `json:"username" gorm:"not null;uniqueIndex:idx_username_deleted_at;type:varchar(20)"`
+	Password  string                `json:"password" gorm:"not null;type:varchar(255)"`
+	Nickname  string                `json:"nickname" gorm:"not null;uniqueIndex:idx_nickname_deleted_at;type:varchar(20)"`
+	Email     string                `json:"email" gorm:"type:varchar(50)"`
+	Role      Role                  `json:"role" gorm:"not null;type:tinyint"`
+	CreatedAt int64                 `json:"created_at" gorm:"autoCreateTime"`
+	UpdatedAt int64                 `json:"updated_at" gorm:"autoCreateTime"`
+	DeletedAt soft_delete.DeletedAt `json:"deleted_at" gorm:"index:idx_username_deleted_at;index:idx_nickname_deleted_at"`
 }
 
 func (u *User) TableName() string {
@@ -19,8 +22,8 @@ func (u *User) TableName() string {
 }
 
 func (u *User) String() string {
-	jsonData, _ := json.Marshal(u)
-	return string(jsonData)
+	bytes, _ := json.Marshal(u)
+	return string(bytes)
 }
 
 type CreateUserRequest struct {
