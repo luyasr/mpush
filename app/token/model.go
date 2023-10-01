@@ -24,8 +24,8 @@ func (t *Token) String() string {
 	return string(bytes)
 }
 
-func (t *Token) Refresh() {
-	t.AccessToken = xid.New().String()
+func (t *Token) Refresh() string {
+	return xid.New().String()
 }
 
 func NewDefaultToken() *Token {

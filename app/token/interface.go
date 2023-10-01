@@ -1,11 +1,14 @@
 package token
 
-import "context"
+import (
+	"context"
+)
 
 type Interface interface {
 	Login(context.Context, *LoginRequest) (*Token, error)
-	Logout(context.Context, *LogoutRequest) error
-	Validate(context.Context, *ValidateRequest) error
+	Logout(context.Context, *Request) error
+	Refresh(context.Context, *Request) error
+	Validate(context.Context, *Request) error
 }
 
 type LoginRequest struct {
@@ -13,11 +16,8 @@ type LoginRequest struct {
 	Password string `json:"password" validate:"required,min=6,max=20" label:"密码"`
 }
 
-type LogoutRequest struct {
+type Request struct {
 	UserId       int64  `json:"user_id" validate:"required" label:"用户id"`
 	AccessToken  string `json:"access_token" validate:"required" label:"登录token"`
 	RefreshToken string `json:"refresh_token" validate:"required" label:"刷新token"`
-}
-
-type ValidateRequest struct {
 }

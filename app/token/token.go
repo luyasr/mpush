@@ -11,6 +11,7 @@ import (
 	"github.com/luyasr/mpush/config"
 	"github.com/rs/zerolog"
 	"gorm.io/gorm"
+	"time"
 )
 
 var _ Interface = (*Service)(nil)
@@ -53,19 +54,19 @@ func (s *Service) Login(ctx context.Context, req *LoginRequest) (*Token, error) 
 	// 实例化一个token对象, 并把用户id赋值
 	token := NewDefaultToken()
 	token.UserId = byUsername.Id
+
 	// 先查询用户是否登陆过, 如果存在登录记录直接更新token, 否则新建
-	err = s.db.WithContext(ctx).Where("user_id = ?", token.UserId).First(token).Error
+	err = s.db.WithContext(ctx).Where("user_id = ?", token.UserId).First(&token).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			err = s.db.WithContext(ctx).Create(token).Error
+			err = s.db.WithContext(ctx).Create(&token).Error
 			if err != nil {
 				return nil, err
 			}
 			return token, nil
 		}
-		return nil, err
 	} else {
-		err := s.db.WithContext(ctx).Model(token).Updates(token).Error
+		err := s.db.WithContext(ctx).Model(&token).Updates(token).Error
 		if err != nil {
 			return nil, err
 		}
@@ -74,7 +75,7 @@ func (s *Service) Login(ctx context.Context, req *LoginRequest) (*Token, error) 
 	return token, nil
 }
 
-func (s *Service) Logout(ctx context.Context, req *LogoutRequest) error {
+func (s *Service) Logout(ctx context.Context, req *Request) error {
 	var token Token
 	// 校验用户退出请求
 	err := validate.Struct(req)
@@ -104,6 +105,40 @@ func (s *Service) Logout(ctx context.Context, req *LogoutRequest) error {
 	return nil
 }
 
-func (s *Service) Validate(ctx context.Context, req *ValidateRequest) error {
+func (s *Service) Refresh(ctx context.Context, req *Request) error {
+	var token Token
+	err := s.db.WithContext(ctx).
+		Where("user_id = ? AND access_token = ? AND refresh_token = ?", req.UserId, req.AccessToken, req.RefreshToken).
+		First(&token).Error
+	if err != nil {
+		return errs.NewAuthFailed("无效的token")
+	}
+
+	accessToken := token.Refresh()
+	err = s.db.WithContext(ctx).Model(&token).Updates(
+		Token{
+			AccessToken:          accessToken,
+			AccessTokenExpiredAt: time.Now().Add(2 * time.Hour).UnixMilli(),
+		}).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *Service) Validate(ctx context.Context, req *Request) error {
+	var token Token
+	err := s.db.WithContext(ctx).
+		Where("user_id = ? AND access_token = ? AND refresh_token = ?", req.UserId, req.AccessToken, req.RefreshToken).
+		First(&token).Error
+	if err != nil {
+		return errs.NewAuthFailed("无效的token")
+	}
+	if time.Now().UnixMilli() > token.AccessTokenExpiredAt {
+		return errs.NewAuthFailed("无效的token")
+	}
+	if time.Now().UnixMilli() > token.RefreshTokenExpiredAt {
+		return errs.NewAuthFailed("登录过期, 请重新登录")
+	}
 	return nil
 }
