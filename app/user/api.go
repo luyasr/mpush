@@ -50,7 +50,7 @@ func (h *Handler) CreateUser(c *gin.Context) {
 func (h *Handler) DeleteUser(c *gin.Context) {
 	id := c.Param("id")
 	parseInt64, _ := strconv.ParseInt(id, 10, 64)
-	err := h.service.DeleteById(c.Request.Context(), parseInt64)
+	err := h.service.DeleteUserById(c.Request.Context(), parseInt64)
 	if err != nil {
 		h.service.log.Error().Stack().Err(err).Send()
 		c.JSON(http.StatusOK, response.NewWithError(err))
@@ -85,7 +85,7 @@ func (h *Handler) GetUserById(c *gin.Context) {
 	id := c.Param("id")
 	parseInt64, _ := strconv.ParseInt(id, 10, 64)
 
-	byId, err := h.service.GetById(c.Request.Context(), parseInt64)
+	byId, err := h.service.GetUserById(c.Request.Context(), parseInt64)
 	if err != nil {
 		h.service.log.Error().Stack().Err(err).Send()
 		c.JSON(http.StatusOK, response.NewWithError(err))

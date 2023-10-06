@@ -42,7 +42,7 @@ func (s *Service) Login(ctx context.Context, req *LoginRequest) (*Token, error) 
 		return nil, err
 	}
 	// 根据用户名称查询用户信息, 用户不存在或者密码不一致返回用户名或密码错误
-	byUsername, err := s.user.GetByUsername(ctx, req.Username)
+	byUsername, err := s.user.GetUserByUsername(ctx, req.Username)
 	if err != nil {
 		return nil, errs.NewAuthFailed("用户名或密码错误")
 	}

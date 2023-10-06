@@ -1,11 +1,21 @@
 package channel
 
-type Channel struct {
-	Id     int64  `json:"id"`
-	UserId int64  `json:"userId" gorm:"index"`
-	Type   string `json:"type"`
-	Name   string `json:"name"`
-	Token  string `json:"token" gorm:"uniqueIndex"`
-	Url    string `json:"url"`
-	Secret string `json:"secret"`
+import (
+	"context"
+	"github.com/rs/zerolog"
+	"gorm.io/gorm"
+)
+
+type Service struct {
+	db  *gorm.DB
+	log zerolog.Logger
+}
+
+func (s *Service) Create(ctx context.Context, req *CreateChannelRequest) (*Channel, error) {
+	return nil, nil
+}
+
+func (s *Service) Validate(ctx context.Context, req *CreateChannelRequest) error {
+
+	return nil
 }

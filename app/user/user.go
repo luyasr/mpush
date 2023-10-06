@@ -45,7 +45,7 @@ func (s *Service) Create(ctx context.Context, req *CreateUserRequest) (*User, er
 	user.Role = RoleMember
 
 	// 检查用户是否存在
-	byUsername, _ := s.GetByUsername(ctx, user.Username)
+	byUsername, _ := s.GetUserByUsername(ctx, user.Username)
 	if byUsername != nil {
 		return nil, errs.NewExists("创建用户失败,用户%s已存在", user.Username)
 	}
@@ -58,8 +58,8 @@ func (s *Service) Create(ctx context.Context, req *CreateUserRequest) (*User, er
 	return &user, nil
 }
 
-func (s *Service) DeleteById(ctx context.Context, id int64) error {
-	byId, err := s.GetById(ctx, id)
+func (s *Service) DeleteUserById(ctx context.Context, id int64) error {
+	byId, err := s.GetUserById(ctx, id)
 	if err != nil {
 		return err
 	}
@@ -81,13 +81,13 @@ func (s *Service) Update(ctx context.Context, id int64, req *UpdateUserRequest) 
 
 	// 如果用户更新请求包含名称和昵称, 先校验是否存在
 	if req.Username != "" {
-		byUsername, _ := s.GetByUsername(ctx, req.Username)
+		byUsername, _ := s.GetUserByUsername(ctx, req.Username)
 		if byUsername != nil {
 			return errs.NewExists("更新用户失败, 用户名称%s已存在", req.Username)
 		}
 	}
 	if req.Nickname != "" {
-		byNickname, _ := s.GetByNickname(ctx, req.Nickname)
+		byNickname, _ := s.GetUserByNickname(ctx, req.Nickname)
 		if byNickname != nil {
 			return errs.NewExists("更新用户失败, 用户昵称%s已存在", req.Nickname)
 		}
@@ -116,7 +116,7 @@ func (s *Service) Update(ctx context.Context, id int64, req *UpdateUserRequest) 
 	return nil
 }
 
-func (s *Service) GetById(ctx context.Context, id int64) (*User, error) {
+func (s *Service) GetUserById(ctx context.Context, id int64) (*User, error) {
 	var user User
 	err := s.db.WithContext(ctx).Where("id = ?", id).First(&user).Error
 	if err != nil {
@@ -128,7 +128,7 @@ func (s *Service) GetById(ctx context.Context, id int64) (*User, error) {
 	return &user, nil
 }
 
-func (s *Service) GetByUsername(ctx context.Context, username string) (*User, error) {
+func (s *Service) GetUserByUsername(ctx context.Context, username string) (*User, error) {
 	var user User
 	err := s.db.WithContext(ctx).Where("username = ?", username).First(&user).Error
 	if err != nil {
@@ -140,7 +140,7 @@ func (s *Service) GetByUsername(ctx context.Context, username string) (*User, er
 	return &user, nil
 }
 
-func (s *Service) GetByNickname(ctx context.Context, nickname string) (*User, error) {
+func (s *Service) GetUserByNickname(ctx context.Context, nickname string) (*User, error) {
 	var user User
 	err := s.db.WithContext(ctx).Where("nickname = ?", nickname).First(&user).Error
 	if err != nil {
