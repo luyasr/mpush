@@ -1,17 +1,32 @@
 package channel
 
+import (
+	"encoding/json"
+	"github.com/luyasr/mpush/app/common"
+)
+
 type Channel struct {
-	Id      int64  `json:"id" gorm:"primaryKey"`
-	Name    string `json:"name"`
-	Type    string `json:"type" gorm:"not null" validate:"required" label:"通道类型"`
-	UserId  int64  `json:"userId" gorm:"index" validate:"required" label:"用户id"`
-	Token   string `json:"token" gorm:"uniqueIndex"`
-	Url     string `json:"url"`
-	Webhook string `json:"webhook"`
-	Secret  string `json:"secret"`
-	AppId   string `json:"app_id"`
+	*common.Meta
+	*Request
+	Username int64  `json:"username" gorm:"not null;index"`
+	Token    string `json:"token" gorm:"not null;uniqueIndex"`
 }
 
-type CreateChannelRequest struct {
-	Channel
+type Request struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	ChannelType string `json:"channel_type" gorm:"not null" validate:"required" label:"通道类型"`
+	Url         string `json:"url"`
+	Webhook     string `json:"webhook"`
+	Secret      string `json:"secret"`
+	AppId       string `json:"app_id"`
+}
+
+func (c *Channel) TableName() string {
+	return "channels"
+}
+
+func (c *Channel) String() string {
+	bytes, _ := json.Marshal(c)
+	return string(bytes)
 }

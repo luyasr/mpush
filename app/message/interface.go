@@ -6,23 +6,15 @@ import (
 )
 
 type Interface interface {
-	CreateMessage(context.Context, *CreateMessageRequest) (*Message, error)
+	CreateMessage(context.Context, *Request) (*Message, error)
 	UpdateMessage(context.Context, *UpdateMessageRequest) error
-	QueryMessage(context.Context, *QueryMessageRequest) (*Message, error)
+	QueryMessage(context.Context, *QueryMessageRequest) (*Messages, error)
 	DeleteMessage(context.Context, *DeleteMessageRequest) error
 }
 
-type CreateMessageRequest struct {
-	UserID    int64  `json:"user_id"`
-	Title     string `json:"title"`
-	Text      string `json:"text"`
-	Content   string `json:"content"`
-	To        string `json:"to"`
-	Timestamp int64  `json:"timestamp"`
-	Status    Status `json:"status"`
-}
-
 type UpdateMessageRequest struct {
+	ID     int64   `json:"id"`
+	Status *Status `json:"status"`
 }
 
 type QueryMessageRequest struct {
@@ -62,9 +54,6 @@ type Messages struct {
 	Items []Message `json:"items"`
 }
 
-func NewMessages() *Messages {
-	return &Messages{}
-}
-
 type DeleteMessageRequest struct {
+	ID int64 `json:"id"`
 }

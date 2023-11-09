@@ -11,10 +11,14 @@ type Service struct {
 	log zerolog.Logger
 }
 
-func (s *Service) Create(ctx context.Context, req *CreateChannelRequest) (*Channel, error) {
-	return nil, nil
-}
+func (s *Service) CreateChannel(ctx context.Context, req *Request) (*Channel, error) {
+	var channel *Channel
 
-func (s *Service) Validate(ctx context.Context, req *CreateChannelRequest) error {
-	return nil
+	channel.Request = req
+	// TODO: 在上下文中传递用户信息
+	if err := s.db.WithContext(ctx).Create(channel).Error; err != nil {
+		return nil, err
+	}
+
+	return channel, nil
 }

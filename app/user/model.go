@@ -2,18 +2,17 @@ package user
 
 import (
 	"encoding/json"
+	"github.com/luyasr/mpush/app/common"
 	"gorm.io/plugin/soft_delete"
 )
 
 type User struct {
-	ID        int64                 `json:"id" gorm:"primaryKey"`
-	Username  string                `json:"username" gorm:"not null;uniqueIndex:idx_username_deleted_at;type:varchar(20)"`
-	Password  string                `json:"password" gorm:"not null;type:varchar(255)"`
-	Nickname  string                `json:"nickname" gorm:"not null;uniqueIndex:idx_nickname_deleted_at;type:varchar(20)"`
-	Email     string                `json:"email" gorm:"type:varchar(50)"`
-	Role      Role                  `json:"role" gorm:"not null;type:tinyint"`
-	CreatedAt int64                 `json:"created_at" gorm:"autoCreateTime"`
-	UpdatedAt int64                 `json:"updated_at" gorm:"autoCreateTime"`
+	*common.Meta
+	Username  string                `json:"username" gorm:"not null;uniqueIndex:idx_username_deleted_at;types:varchar(20)"`
+	Password  string                `json:"password" gorm:"not null;types:varchar(255)"`
+	Nickname  string                `json:"nickname" gorm:"not null;uniqueIndex:idx_nickname_deleted_at;types:varchar(20)"`
+	Email     string                `json:"email" gorm:"types:varchar(50)"`
+	Role      Role                  `json:"role" gorm:"not null;types:tinyint"`
 	DeletedAt soft_delete.DeletedAt `json:"deleted_at" gorm:"index:idx_username_deleted_at;index:idx_nickname_deleted_at"`
 }
 
