@@ -7,7 +7,7 @@ import (
 
 var service = NewService()
 
-func TestService_Create(t *testing.T) {
+func TestService_CreateUser(t *testing.T) {
 	req := CreateUserRequest{
 		Username:   "test",
 		Password:   "123456",
@@ -15,7 +15,7 @@ func TestService_Create(t *testing.T) {
 		Email:      "test@gmail.com",
 	}
 
-	user, err := service.Create(context.Background(), &req)
+	user, err := service.CreateUser(context.Background(), &req)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -23,18 +23,22 @@ func TestService_Create(t *testing.T) {
 	t.Log(user)
 }
 
-func TestService_DeleteById(t *testing.T) {
-	err := service.DeleteById(context.Background(), 9)
+func TestService_DeleteUser(t *testing.T) {
+	req := &DeleteUserRequest{
+		ID: 9,
+	}
+	err := service.DeleteUser(context.Background(), req)
 	if err != nil {
 		t.Fatal(err)
 	}
 }
 
-func TestService_Update(t *testing.T) {
-	req := UpdateUserRequest{
+func TestService_UpdateUser(t *testing.T) {
+	req := &UpdateUserRequest{
+		ID:       9,
 		Nickname: "test",
 	}
-	err := service.Update(context.Background(), 9, &req)
+	err := service.UpdateUser(context.Background(), req)
 	if err != nil {
 		t.Fatal(err)
 	}

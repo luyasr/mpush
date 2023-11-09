@@ -1,4 +1,4 @@
-package errs
+package errorhandler
 
 func NewAuthFailed(format string, a ...any) *Error {
 	return New(401, format, a...)

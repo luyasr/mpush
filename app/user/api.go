@@ -1,11 +1,9 @@
 package user
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/luyasr/mpush/common/response"
-	"net/http"
-	"strconv"
+	"github.com/luyasr/mpush/pkg/response"
+	"github.com/luyasr/mpush/pkg/utils"
 )
 
 type Handler struct {
@@ -22,76 +20,81 @@ func (h *Handler) Registry(r *gin.RouterGroup) {
 	group := r.Group("user")
 	{
 		group.POST("", h.CreateUser)
-		group.DELETE(":id", h.DeleteUser)
-		group.PUT(":id", h.UpdateUser)
-		group.GET(":id", h.GetUserById)
+		group.DELETE(":id", h.DeleteUserByID)
+		group.PUT(":id", h.UpdateUserByID)
+		group.GET(":id", h.QueryUserByID)
 	}
 }
 
 func (h *Handler) CreateUser(c *gin.Context) {
-	var req CreateUserRequest
+	var req *CreateUserRequest
+
 	err := c.BindJSON(&req)
 	if err != nil {
-		h.service.log.Error().Stack().Err(err).Send()
-		c.JSON(http.StatusOK, response.NewWithError(err))
-		return
-	}
-	user, err := h.service.Create(c.Request.Context(), &req)
-	if err != nil {
-		h.service.log.Error().Stack().Err(err).Send()
-		c.JSON(http.StatusOK, response.NewWithError(err))
+		h.service.log.Error().Stack().Err(err).Msgf("创建用户%s失败", req.Username)
+		response.JSONWithError(c, err)
 		return
 	}
 
-	h.service.log.Info().Msg(fmt.Sprintf("创建用户%s成功", user.Username))
-	c.JSON(http.StatusOK, response.New(user))
+	user, err := h.service.CreateUser(c.Request.Context(), req)
+	if err != nil {
+		h.service.log.Error().Stack().Err(err).Msgf("创建用户%s失败", req.Username)
+		response.JSONWithError(c, err)
+		return
+	}
+
+	h.service.log.Info().Msgf("创建用户%s成功", user.Username)
+	response.JSON(c, user)
 }
 
-func (h *Handler) DeleteUser(c *gin.Context) {
-	id := c.Param("id")
-	parseInt64, _ := strconv.ParseInt(id, 10, 64)
-	err := h.service.DeleteUserById(c.Request.Context(), parseInt64)
+func (h *Handler) DeleteUserByID(c *gin.Context) {
+	var req *DeleteUserRequest
+
+	req.ID = utils.StringToInt64(c.Param("id"))
+
+	err := h.service.DeleteUser(c.Request.Context(), req)
 	if err != nil {
-		h.service.log.Error().Stack().Err(err).Send()
-		c.JSON(http.StatusOK, response.NewWithError(err))
+		h.service.log.Error().Stack().Err(err).Msgf("删除用户id%d失败", req.ID)
+		response.JSONWithError(c, err)
 		return
 	}
-	h.service.log.Info().Msg(fmt.Sprintf("删除用户id%d成功", parseInt64))
-	c.JSON(http.StatusOK, response.New(nil))
+
+	h.service.log.Info().Msgf("删除用户id%d成功", req.ID)
+	response.JSON(c, nil)
 }
 
-func (h *Handler) UpdateUser(c *gin.Context) {
-	var req UpdateUserRequest
-	err := c.BindJSON(&req)
-	if err != nil {
-		h.service.log.Error().Stack().Err(err).Send()
-		c.JSON(http.StatusOK, response.NewWithError(err))
-		return
-	}
-	id := c.Param("id")
-	parseInt64, _ := strconv.ParseInt(id, 10, 64)
+func (h *Handler) UpdateUserByID(c *gin.Context) {
+	var req *UpdateUserRequest
 
-	err = h.service.Update(c.Request.Context(), parseInt64, &req)
+	err := c.BindJSON(req)
 	if err != nil {
-		h.service.log.Error().Stack().Err(err).Send()
-		c.JSON(http.StatusOK, response.NewWithError(err))
+		h.service.log.Error().Stack().Err(err).Msgf("更新用户id%d失败", req.ID)
+		response.JSONWithError(c, err)
 		return
 	}
-	h.service.log.Info().Msg(fmt.Sprintf("用户id%d更新成功", parseInt64))
-	c.JSON(http.StatusOK, response.New(nil))
+
+	req.ID = utils.StringToInt64(c.Param("id"))
+
+	err = h.service.UpdateUser(c.Request.Context(), req)
+	if err != nil {
+		h.service.log.Error().Stack().Err(err).Msgf("更新用户id%d失败", req.ID)
+		response.JSONWithError(c, err)
+		return
+	}
+	h.service.log.Info().Msgf("更新用户id%d成功", req.ID)
+	response.JSON(c, nil)
 }
 
-func (h *Handler) GetUserById(c *gin.Context) {
-	id := c.Param("id")
-	parseInt64, _ := strconv.ParseInt(id, 10, 64)
+func (h *Handler) QueryUserByID(c *gin.Context) {
+	req := NewQueryUserByIdRequest(utils.StringToInt64(c.Param("id")))
 
-	byId, err := h.service.GetUserById(c.Request.Context(), parseInt64)
+	user, err := h.service.QueryUser(c.Request.Context(), req)
 	if err != nil {
-		h.service.log.Error().Stack().Err(err).Send()
-		c.JSON(http.StatusOK, response.NewWithError(err))
+		h.service.log.Error().Stack().Err(err).Msgf("查询用户id%v失败", req.QueryByValue...)
+		response.JSONWithError(c, err)
 		return
 	}
 
-	h.service.log.Info().Msg(fmt.Sprintf("用户id%d查询", parseInt64))
-	c.JSON(http.StatusOK, response.New(byId))
+	h.service.log.Info().Msgf("查询用户id%v成功", req.QueryByValue...)
+	response.JSON(c, user)
 }

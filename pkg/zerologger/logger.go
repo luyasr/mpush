@@ -3,7 +3,7 @@ package zerologger
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/luyasr/mpush/config"
+	"github.com/luyasr/mpush/pkg/utils"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/pkgerrors"
 	"net"
@@ -11,7 +11,6 @@ import (
 	"net/http/httputil"
 	"os"
 	"path"
-	"runtime"
 	"runtime/debug"
 	"strings"
 	"time"
@@ -20,6 +19,10 @@ import (
 var (
 	Console = NewConsoleLog()
 )
+
+type LogWithOptions struct {
+	Dir string `json:"dir"`
+}
 
 func init() {
 	zerolog.TimeFieldFormat = time.DateTime
@@ -30,12 +33,12 @@ func NewConsoleLog() zerolog.Logger {
 	return zerolog.New(console()).With().Timestamp().Logger()
 }
 
-func NewFileLog(name string) zerolog.Logger {
-	return zerolog.New(file(name)).With().Timestamp().Caller().Logger()
+func NewFileLog(name string, opts LogWithOptions) zerolog.Logger {
+	return zerolog.New(file(name, opts)).With().Timestamp().Caller().Logger()
 }
 
-func NewMultiLog(name string) zerolog.Logger {
-	multi := zerolog.MultiLevelWriter(console(), file(name))
+func NewMultiLog(name string, opts LogWithOptions) zerolog.Logger {
+	multi := zerolog.MultiLevelWriter(console(), file(name, opts))
 	return zerolog.New(multi).With().Timestamp().Logger()
 }
 
@@ -48,33 +51,31 @@ func console() zerolog.ConsoleWriter {
 	return output
 }
 
-func rootPath() string {
-	_, filename, _, _ := runtime.Caller(0)
-	root := path.Dir(path.Dir(path.Dir(filename)))
-	return root
-}
-
-func file(name string) *os.File {
+func file(name string, opts LogWithOptions) *os.File {
 	var err error
-	var dir string
-	if config.C.Log.Dir == "" {
-		err = os.MkdirAll(fmt.Sprintf("%s/log/%s", rootPath(), name), os.ModePerm)
-		dir = fmt.Sprintf("%s/log", rootPath())
+	var filepath string
+	var filename strings.Builder
+
+	if opts.Dir == "" {
+		filepath = path.Join(utils.RootPath(), "log", name)
+		err = os.MkdirAll(filepath, os.ModePerm)
 	} else {
-		err = os.MkdirAll(fmt.Sprintf("%s/%s", config.C.Log.Dir, name), os.ModePerm)
-		dir = config.C.Log.Dir
+		filepath = path.Join(opts.Dir, name)
+		err = os.MkdirAll(filepath, os.ModePerm)
 	}
 	if err != nil {
 		panic(err)
 	}
 
-	filename := fmt.Sprintf("%s/%s/%s.log", dir, name, time.Now().Format("2006-01-02-15"))
-	file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)
+	filename.WriteString(time.Now().Format("2006-01-02-15"))
+	filename.WriteString(".log")
+	f := path.Join(filepath, filename.String())
+	openFile, err := os.OpenFile(f, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)
 	if err != nil {
 		panic(err)
 	}
 
-	return file
+	return openFile
 }
 
 // GinLogger receive gin framework default log
@@ -118,7 +119,7 @@ func GinRecovery(stack bool) gin.HandlerFunc {
 						Any("errors", err).
 						Str("request", string(httpRequest)).Send()
 					// If the connection is dead, we can't write a status to it.
-					c.Error(err.(error)) // nolint: errcheck
+					_ = c.Error(err.(error)) // nolint: err check
 					c.Abort()
 					return
 				}

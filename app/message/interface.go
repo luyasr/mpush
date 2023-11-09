@@ -1,14 +1,70 @@
 package message
 
-import "context"
+import (
+	"context"
+	"github.com/luyasr/mpush/pkg/utils"
+)
 
 type Interface interface {
-	Create(context.Context, *CreateMessageRequest) (*Message, error)
-	UpdateMessageStatusByUserId(context.Context, int64, Status) error
-	UpdateMessageStatusByUserIds(context.Context, []int64, Status) error
-	GetMessageByUserId(context.Context, int64) (*Message, error)
-	GetMessageByUserIds(context.Context, []int64) ([]*Message, error)
+	CreateMessage(context.Context, *CreateMessageRequest) (*Message, error)
+	UpdateMessage(context.Context, *UpdateMessageRequest) error
+	QueryMessage(context.Context, *QueryMessageRequest) (*Message, error)
+	DeleteMessage(context.Context, *DeleteMessageRequest) error
 }
 
 type CreateMessageRequest struct {
+	UserID    int64  `json:"user_id"`
+	Title     string `json:"title"`
+	Text      string `json:"text"`
+	Content   string `json:"content"`
+	To        string `json:"to"`
+	Timestamp int64  `json:"timestamp"`
+	Status    Status `json:"status"`
+}
+
+type UpdateMessageRequest struct {
+}
+
+type QueryMessageRequest struct {
+	Status     *Status  `json:"status"`      // 消息状态
+	PageSize   int      `json:"page_size"`   // 消息分页页码
+	PageNumber int      `json:"page_number"` // 消息分页大小
+	Usernames  []string `json:"usernames"`   // 消息发送用户
+	Channels   []string `json:"channels"`    // 消息发送通道
+	Keywords   string   `json:"keywords"`    // 消息关键词
+}
+
+func (q *QueryMessageRequest) SetStatus(status Status) {
+	q.Status = &status
+}
+
+func (q *QueryMessageRequest) Offset() int {
+	return q.PageSize * (q.PageNumber - 1)
+}
+
+func (q *QueryMessageRequest) ParsePageSize(pageSize string) {
+	q.PageSize = utils.StringToInt(pageSize)
+}
+
+func (q *QueryMessageRequest) ParsePageNumber(pageNumber string) {
+	q.PageNumber = utils.StringToInt(pageNumber)
+}
+
+func NewQueryMessageRequest() *QueryMessageRequest {
+	return &QueryMessageRequest{
+		PageNumber: 1,
+		PageSize:   10,
+	}
+}
+
+type Messages struct {
+	Total int64     `json:"total"`
+	Items []Message `json:"items"`
+}
+
+func NewMessages() *Messages {
+	return &Messages{}
+}
+
+type DeleteMessageRequest struct {
 }

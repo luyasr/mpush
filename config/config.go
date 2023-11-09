@@ -3,20 +3,23 @@ package config
 import (
 	"fmt"
 	"github.com/fsnotify/fsnotify"
+	"github.com/luyasr/mpush/pkg/utils"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"path"
-	"runtime"
 	"strings"
 	"sync"
 )
 
-var C = new(Config)
+var (
+	C    = new(Config)
+	once sync.Once
+)
 
 type Config struct {
 	Server Server
+	Jwt    Jwt
 	Mysql  Mysql
 	Log    Log
 }
@@ -24,6 +27,10 @@ type Config struct {
 type Server struct {
 	Debug bool `json:"debug"`
 	Port  int  `json:"port"`
+}
+
+type Jwt struct {
+	Secret string `json:"secret"`
 }
 
 type Mysql struct {
@@ -40,14 +47,8 @@ type Log struct {
 	Dir string `json:"dir"`
 }
 
-func rootPath() string {
-	_, filename, _, _ := runtime.Caller(0)
-	root := path.Dir(path.Dir(filename))
-	return root
-}
-
 func newConfig() {
-	viper.AddConfigPath(rootPath())
+	viper.AddConfigPath(utils.RootPath())
 	viper.AddConfigPath("config")
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
@@ -56,20 +57,40 @@ func newConfig() {
 	viper.SetEnvKeyReplacer(replacer)
 
 	if err := viper.ReadInConfig(); err != nil {
-		panic(fmt.Errorf("Fatal errors config file: %s \n", err))
+		panic(fmt.Errorf("fatal errors config file: %w", err))
 	}
 
 	if err := viper.Unmarshal(C); err != nil {
-		panic(fmt.Errorf("unmarshal conf failed, err:%s \n", err))
+		panic(fmt.Errorf("unmarshal conf failed, err: %w", err))
 	}
 
 	viper.OnConfigChange(func(e fsnotify.Event) {
 		if err := viper.Unmarshal(C); err != nil {
-			panic(fmt.Errorf("unmarshal conf failed, err:%s \n", err))
+			panic(fmt.Errorf("unmarshal conf failed, err: %w", err))
 		}
 	})
 
 	viper.WatchConfig()
+}
+
+func (m *Mysql) initDb() {
+	var logMode logger.Interface
+	if C.Server.Debug {
+		logMode = logger.Default.LogMode(logger.Info)
+	} else {
+		logMode = logger.Default.LogMode(logger.Silent)
+	}
+
+	once.Do(func() {
+		conn, err := gorm.Open(mysql.Open(m.DSN()), &gorm.Config{
+			Logger: logMode,
+		})
+		if err != nil {
+			panic(err)
+		}
+
+		m.Conn = conn
+	})
 }
 
 func (m *Mysql) DSN() string {
@@ -84,30 +105,10 @@ func (m *Mysql) DSN() string {
 }
 
 func (m *Mysql) GetConn() *gorm.DB {
-	var logMode logger.Interface
-	if C.Server.Debug {
-		logMode = logger.Default.LogMode(logger.Info)
-	} else {
-		logMode = logger.Default.LogMode(logger.Silent)
-	}
-
-	if m.Conn == nil {
-		m.Lock.Lock()
-		defer m.Lock.Unlock()
-
-		conn, err := gorm.Open(mysql.Open(m.DSN()), &gorm.Config{
-			Logger: logMode,
-		})
-		if err != nil {
-			panic(err)
-		}
-
-		m.Conn = conn
-	}
-
 	return m.Conn
 }
 
 func init() {
 	newConfig()
+	C.Mysql.initDb()
 }

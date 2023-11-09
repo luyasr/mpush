@@ -6,7 +6,7 @@ import (
 )
 
 type User struct {
-	Id        int64                 `json:"id" gorm:"primaryKey"`
+	ID        int64                 `json:"id" gorm:"primaryKey"`
 	Username  string                `json:"username" gorm:"not null;uniqueIndex:idx_username_deleted_at;type:varchar(20)"`
 	Password  string                `json:"password" gorm:"not null;type:varchar(255)"`
 	Nickname  string                `json:"nickname" gorm:"not null;uniqueIndex:idx_nickname_deleted_at;type:varchar(20)"`
@@ -24,18 +24,4 @@ func (u *User) TableName() string {
 func (u *User) String() string {
 	bytes, _ := json.Marshal(u)
 	return string(bytes)
-}
-
-type CreateUserRequest struct {
-	Username   string `json:"username" validate:"required,min=3,max=20" label:"用户名"`
-	Password   string `json:"password" validate:"required,min=6,max=20" label:"密码"`
-	RePassword string `json:"re_password" validate:"required,min=6,max=20,eqfield=Password" label:"确认密码"`
-	Email      string `json:"email" validate:"required,email" label:"邮箱"`
-}
-
-type UpdateUserRequest struct {
-	Username string `json:"username" validate:"omitempty,min=3,max=20" label:"用户名"`
-	Password string `json:"password" validate:"omitempty,min=6,max=20" label:"密码"`
-	Nickname string `json:"nickname" validate:"omitempty,min=3,max=20" label:"昵称"`
-	Email    string `json:"email" validate:"omitempty,email" label:"邮箱"`
 }

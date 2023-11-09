@@ -16,6 +16,5 @@ func (s *Service) Create(ctx context.Context, req *CreateChannelRequest) (*Chann
 }
 
 func (s *Service) Validate(ctx context.Context, req *CreateChannelRequest) error {
-
 	return nil
 }
