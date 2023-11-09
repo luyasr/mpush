@@ -15,7 +15,7 @@ func (s *Service) CreateChannel(ctx context.Context, req *Request) (*Channel, er
 	var channel *Channel
 
 	channel.Request = req
-	// TODO: 在上下文中传递用户信息
+	// TODO 在上下文中传递用户信息
 	if err := s.db.WithContext(ctx).Create(channel).Error; err != nil {
 		return nil, err
 	}
