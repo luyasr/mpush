@@ -9,7 +9,7 @@ import (
 	"github.com/luyasr/mpush/config"
 )
 
-func logmode(mode string) string {
+func logMode(mode string) string {
 	var m string
 	switch mode {
 	case "debug":
@@ -26,7 +26,7 @@ func logmode(mode string) string {
 }
 
 func NewHttpServer() *http.Server {
-	gin.SetMode(logmode(config.Cfg.Http.Mode))
+	gin.SetMode(logMode(config.Cfg.Http.Mode))
 	r := gin.New()
 	r.Use(log.New().GinLogger(), recovery.New().GinRecovery(true))
 	apiV1 := r.Group("/api/v1")

@@ -9,7 +9,9 @@ import (
 
 func run() {
 	application := app.New(app.Server(server.NewHttpServer()))
-	application.Run()
+	if err := application.Run(); err != nil {
+		log.Fatal(err.Error())
+	}
 }
 
 func Init() {

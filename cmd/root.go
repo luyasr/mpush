@@ -13,7 +13,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "mpush",
 	Short: "消息推送服务",
-	Long:  `消息推送服务，支持多种消息推送方式，包括短信、邮件、微信、钉钉、企业微信等。`,
+	Long:  `消息推送服务，支持多种消息推送方式，包括短信、邮件、微信、钉钉、slack等。`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="5673c104-f943-4b22-86ee-0750a7868172" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/apps/token/api.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/token/dao.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/token/interface.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/token/model.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/token/token.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/db.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/server/http.go" beforeDir="false" afterPath="$PROJECT_DIR$/apps/server/http.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/user/api.go" beforeDir="false" afterPath="$PROJECT_DIR$/apps/user/api.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/user/dao.go" beforeDir="false" afterPath="$PROJECT_DIR$/apps/user/dao.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/user/enum.go" beforeDir="false" afterPath="$PROJECT_DIR$/apps/user/enum.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/user/interface.go" beforeDir="false" afterPath="$PROJECT_DIR$/apps/user/interface.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/user/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/apps/user/model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/user/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/apps/user/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/app.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/root.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/root.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" url="file://$PROJECT_DIR$/../../../usr/local/go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GoLibraries">
+    <option name="urls">
+      <list>
+        <option value="file://wsl.localhost/Ubuntu/usr/local/gopath/" />
+      </list>
+    </option>
+    <option name="useGoPathFromSystemEnvironment" value="false" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="2cqkB6jGGr3Uqk0HxKFSE4SuiEb" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultGoTemplateProperty": "Go File",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.modules.automatic.dependencies.download": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "git-widget-placeholder": "master",
+    "go.import.settings.migrated": "true",
+    "go.sdk.automatically.set": "true",
+    "last_opened_file_path": "C:/Users/huangzc",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "go.sdk"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-gosdk-2946fb9b3188-155fe4b6e3a0-org.jetbrains.plugins.go.sharedIndexes.bundled-GO-233.14475.38" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VgoProject">
+    <settings-migrated>true</settings-migrated>
+  </component>
+</project>

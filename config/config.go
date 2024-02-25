@@ -4,7 +4,9 @@ import (
 	"fmt"
 
 	"github.com/luyasr/gaia/config"
+	"github.com/luyasr/gaia/ioc"
 	"github.com/luyasr/gaia/log"
+	"github.com/luyasr/gaia/stores/mysql"
 )
 
 const (
@@ -13,8 +15,9 @@ const (
 
 var Cfg = new(Config)
 
-type Config struct{
-	Http Http `json:"http"`
+type Config struct {
+	Http  Http          `json:"http"`
+	Mysql *mysql.Config `json:"mysql"`
 }
 
 type Http struct {
@@ -36,7 +39,9 @@ func (c *Config) Name() string {
 }
 
 func init() {
-	cfg, err := config.New(config.LoadFile("config", Cfg))
+	ioc.Container.Registry(ioc.ConfigNamespace, Cfg)
+
+	cfg, err := config.New(config.LoadFile("config.yaml", Cfg))
 	if err != nil {
 		log.Fatal(err.Error())
 	}

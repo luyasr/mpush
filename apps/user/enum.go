@@ -13,3 +13,10 @@ const (
 	RoleAnonymous Role = iota
 	RoleAdmin
 )
+
+type FindBy int
+
+const (
+	FindById FindBy = iota
+	FindByUsername
+)

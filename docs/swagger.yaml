@@ -1,0 +1,222 @@
+definitions:
+  token.LoginReq:
+    properties:
+      password:
+        description: 密码
+        type: string
+      username:
+        description: 用户名
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  token.Tk:
+    properties:
+      refresh_token:
+        description: 刷新token
+        type: string
+      token:
+        description: 登录token
+        type: string
+    required:
+    - refresh_token
+    - token
+    type: object
+  user.CreateReq:
+    properties:
+      password:
+        description: 密码
+        maxLength: 20
+        minLength: 6
+        type: string
+      username:
+        description: 用户名
+        maxLength: 20
+        minLength: 3
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  user.FindBy:
+    enum:
+    - 0
+    - 1
+    type: integer
+    x-enum-varnames:
+    - FindById
+    - FindByUsername
+  user.FindReq:
+    properties:
+      find_by:
+        allOf:
+        - $ref: '#/definitions/user.FindBy'
+        description: 查询条件
+      value:
+        description: 查询值
+        type: string
+    type: object
+  user.Role:
+    enum:
+    - 0
+    - 1
+    type: integer
+    x-enum-varnames:
+    - RoleAnonymous
+    - RoleAdmin
+  user.Status:
+    enum:
+    - 0
+    - 1
+    type: integer
+    x-enum-varnames:
+    - StatusNormal
+    - StatusDeleted
+  user.User:
+    properties:
+      created_at:
+        description: CreatedAt 创建时间
+        type: integer
+      deleted_at:
+        description: DeletedAt 删除时间
+        type: integer
+      email:
+        description: Email 邮箱
+        type: string
+      id:
+        description: ID 用户ID
+        type: integer
+      nickname:
+        description: Nickname 昵称
+        type: string
+      password:
+        description: Password 密码
+        type: string
+      phone:
+        description: Phone 手机号
+        type: string
+      role:
+        allOf:
+        - $ref: '#/definitions/user.Role'
+        description: Role 角色
+      status:
+        allOf:
+        - $ref: '#/definitions/user.Status'
+        description: Status 状态
+      updated_at:
+        description: UpdatedAt 更新时间
+        type: integer
+      username:
+        description: Username 用户名
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/token/login:
+    post:
+      consumes:
+      - application/json
+      description: 登录
+      parameters:
+      - description: 登录请求参数
+        in: body
+        name: Object
+        required: true
+        schema:
+          $ref: '#/definitions/token.LoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/token.Tk'
+      summary: 登录
+      tags:
+      - token
+  /api/v1/token/logout:
+    post:
+      consumes:
+      - application/json
+      description: 登出
+      parameters:
+      - description: 登出请求参数
+        in: body
+        name: Object
+        required: true
+        schema:
+          $ref: '#/definitions/token.Tk'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: 登出
+      tags:
+      - token
+  /api/v1/token/refresh:
+    post:
+      consumes:
+      - application/json
+      description: 刷新
+      parameters:
+      - description: 刷新请求参数
+        in: body
+        name: Object
+        required: true
+        schema:
+          $ref: '#/definitions/token.Tk'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 刷新
+      tags:
+      - token
+  /api/v1/user:
+    get:
+      consumes:
+      - application/json
+      description: 查询用户
+      parameters:
+      - description: 查询用户请求参数
+        in: body
+        name: Object
+        schema:
+          $ref: '#/definitions/user.FindReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.User'
+      summary: 查询用户
+      tags:
+      - 用户
+    post:
+      consumes:
+      - application/json
+      description: 创建用户
+      parameters:
+      - description: 创建用户请求参数
+        in: body
+        name: Object
+        schema:
+          $ref: '#/definitions/user.CreateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.User'
+      summary: 创建用户
+      tags:
+      - 用户
+swagger: "2.0"

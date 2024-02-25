@@ -1,0 +1,8 @@
+http:
+  port: 8080
+  mode: debug
+
+mysql:
+  password: 12345678
+  database: mpush
+  logLevel: debug
