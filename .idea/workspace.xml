@@ -4,28 +4,15 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5673c104-f943-4b22-86ee-0750a7868172" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/apps/token/api.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/token/dao.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/token/interface.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/token/model.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/token/token.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/db.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/server/http.go" beforeDir="false" afterPath="$PROJECT_DIR$/apps/server/http.go" afterDir="false" />
+    <list default="true" id="5673c104-f943-4b22-86ee-0750a7868172" name="Changes" comment="add user token module">
+      <change beforePath="$PROJECT_DIR$/apps/token/dao.go" beforeDir="false" afterPath="$PROJECT_DIR$/apps/token/dao.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/token/interface.go" beforeDir="false" afterPath="$PROJECT_DIR$/apps/token/interface.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/token/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/apps/token/model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/token/token.go" beforeDir="false" afterPath="$PROJECT_DIR$/apps/token/token.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/user/api.go" beforeDir="false" afterPath="$PROJECT_DIR$/apps/user/api.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/user/dao.go" beforeDir="false" afterPath="$PROJECT_DIR$/apps/user/dao.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/user/enum.go" beforeDir="false" afterPath="$PROJECT_DIR$/apps/user/enum.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/user/interface.go" beforeDir="false" afterPath="$PROJECT_DIR$/apps/user/interface.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/user/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/apps/user/model.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/user/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/apps/user/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/app.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/root.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/root.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,6 +82,10 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="add user token module" />
+    <option name="LAST_COMMIT_MESSAGE" value="add user token module" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
