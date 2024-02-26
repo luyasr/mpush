@@ -3,7 +3,7 @@ module github.com/luyasr/mpush
 go 1.21.7
 
 require (
-	github.com/luyasr/gaia v0.0.0-20240225145515-6c9007ca4ef6
+	github.com/luyasr/gaia v0.0.0-20240226074919-2611b0f48944
 	github.com/rs/xid v1.5.0
 	github.com/swaggo/swag v1.16.3
 )

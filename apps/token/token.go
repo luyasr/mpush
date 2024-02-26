@@ -13,8 +13,9 @@ import (
 )
 
 const (
-	tokenNotFound = "user %v token not found"
 	tokenInvalid  = "invalid token"
+	tokenNotFound = "%v token not found"
+	tokenExpired  = "%v token expired"
 )
 
 var _ Service = (*Controller)(nil)
@@ -79,18 +80,22 @@ func (c *Controller) Logout(ctx context.Context, req *Tk) error {
 }
 
 func (c *Controller) Refresh(ctx context.Context, req *Tk) (string, error) {
+	if err := validator.Struct(req); err != nil {
+		return "", errors.BadRequest(tokenInvalid, err.Error())
+	}
+
 	return "", nil
 }
 
-func (c *Controller) Validate(ctx context.Context, req *ValidateReq) (*Token, error) {
-	if err := validator.Struct(req); err != nil {
-		return nil, errors.BadRequest("", err.Error())
-	}
-
-	token, err := c.FindByToken(ctx, req.Token)
+func (c *Controller) Validate(ctx context.Context, token string) (*Token, error) {
+	byToken, err := c.findByToken(ctx, token)
 	if err != nil {
-		return nil, err
+		return nil, errors.Unauthorized(tokenInvalid, tokenNotFound, token)
 	}
 
-	return token, nil
+	if byToken.IsExpired() {
+		return nil, errors.Unauthorized(tokenExpired, tokenExpired, token)
+	}
+
+	return byToken, nil
 }

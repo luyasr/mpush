@@ -11,7 +11,7 @@ type Service interface {
 	Logout(ctx context.Context, req *Tk) error
 	// Refresh 刷新
 	Refresh(ctx context.Context, req *Tk) (string, error)
-	Validate(ctx context.Context, req *ValidateReq) (*Token, error)
+	Validate(ctx context.Context, token string) (*Token, error)
 }
 
 // LoginReq 登录请求
@@ -28,10 +28,4 @@ type Tk struct {
 	Token string `json:"token" validate:"required" label:"token"`
 	// 刷新token
 	RefreshToken string `json:"refresh_token" validate:"required" label:"refresh_token"`
-}
-
-// ValidateReq 验证token请求
-type ValidateReq struct {
-	// 登录token
-	Token string `json:"token" validate:"required" label:"token"`
 }

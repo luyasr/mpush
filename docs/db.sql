@@ -18,13 +18,13 @@ CREATE TABLE `user` (
 CREATE TABLE `token` (
                          `id` bigint NOT NULL AUTO_INCREMENT COMMENT '自增主键',
                          `user_id` bigint NOT NULL COMMENT '用户id',
-                         `token` varchar(255) NOT NULL COMMENT '登录token',
+                         `access_token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '登录token',
                          `refresh_token` varchar(255) NOT NULL COMMENT '刷新token',
-                         `expire_time` bigint NOT NULL COMMENT '到期时间戳',
-                         `refresh_time` bigint NOT NULL COMMENT '刷新时间戳',
+                         `access_token_expired_at` bigint NOT NULL COMMENT '到期时间戳',
+                         `refresh_token_expired_at` bigint NOT NULL COMMENT '刷新时间戳',
                          `created_at` bigint NOT NULL COMMENT '创建时间',
                          `updated_at` bigint NOT NULL COMMENT '更新时间',
                          `deleted_at` bigint DEFAULT NULL COMMENT '删除时间',
                          PRIMARY KEY (`id`),
-                         UNIQUE KEY `idx_token_deleted_at` (`token`,`deleted_at`) USING BTREE COMMENT '联合索引'
+                         UNIQUE KEY `idx_token_deleted_at` (`access_token`,`deleted_at`) USING BTREE COMMENT '联合索引'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

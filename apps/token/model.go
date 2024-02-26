@@ -16,13 +16,13 @@ type Token struct {
 	// UserId 用户ID
 	UserId int64 `json:"user_id"`
 	// Token token
-	Token string `json:"token"`
+	AccessToken string `json:"access_token"`
 	// RefreshToken 刷新token
 	RefreshToken string `json:"refresh_token"`
 	// ExpireTime 过期时间
-	ExpireTime int64 `json:"expire_time"`
+	AccessTokenExpiredAt int64 `json:"access_token_expired_at"`
 	// RefreshTime 刷新时间
-	RefreshTime int64 `json:"refresh_time"`
+	RefreshTokenExpiredAt int64 `json:"refresh_token_expired_at"`
 	// CreatedAt 创建时间
 	CreatedAt int64 `json:"created_at"`
 	// UpdatedAt 更新时间
@@ -41,15 +41,23 @@ func (t *Token) String() string {
 	return string(bytes)
 }
 
+func (t *Token) IsExpired() bool {
+	return time.Now().Unix() > t.AccessTokenExpiredAt
+}
+
+func (t *Token) IsRefreshExpired() bool {
+	return time.Now().Unix() > t.RefreshTokenExpiredAt
+}
+
 func NewToken(userId int64) *Token {
 	now := time.Now().Unix()
 	return &Token{
-		UserId:       userId,
-		Token:        xid.New().String(),
-		RefreshToken: xid.New().String(),
-		ExpireTime:   now + 7200,
-		RefreshTime:  now + 604800,
-		CreatedAt:    now,
-		UpdatedAt:    now,
+		UserId:                userId,
+		AccessToken:           xid.New().String(),
+		RefreshToken:          xid.New().String(),
+		AccessTokenExpiredAt:  now + 7200,
+		RefreshTokenExpiredAt: now + 604800,
+		CreatedAt:             now,
+		UpdatedAt:             now,
 	}
 }

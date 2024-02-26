@@ -30,6 +30,10 @@ func (c *Controller) findByToken(ctx context.Context, token string) (*Token, err
 	return tk, nil
 }
 
+func (c *Controller) update(ctx context.Context, token *Token) error {
+	return c.db.WithContext(ctx).Model(token).Updates(token).Error
+}
+
 func (c *Controller) login(ctx context.Context, token *Token) (*Tk, error) {
 	tx := c.db.WithContext(ctx).Create(token)
 	if err := tx.Error; err != nil {
@@ -37,9 +41,13 @@ func (c *Controller) login(ctx context.Context, token *Token) (*Tk, error) {
 	}
 
 	tk := &Tk{
-		Token:        token.Token,
+		Token:        token.AccessToken,
 		RefreshToken: token.RefreshToken,
 	}
 
 	return tk, nil
+}
+
+func (c *Controller) refresh(ctx context.Context, token *Token) (string, error) {
+	return "", nil
 }
