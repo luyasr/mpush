@@ -25,7 +25,7 @@ type LoginReq struct {
 // Tk 登录token 刷新token
 type Tk struct {
 	// 登录token
-	Token string `json:"token" validate:"required" label:"token"`
+	AccessToken string `json:"access_token" validate:"required" label:"登录token"`
 	// 刷新token
-	RefreshToken string `json:"refresh_token" validate:"required" label:"refresh_token"`
+	RefreshToken string `json:"refresh_token" validate:"required" label:"刷新token"`
 }

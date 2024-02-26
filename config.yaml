@@ -5,4 +5,4 @@ http:
 mysql:
   password: 12345678
   database: mpush
-  logLevel: debug
+  logLevel: info

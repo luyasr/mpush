@@ -9,7 +9,9 @@ import (
 	"github.com/luyasr/gaia/stores/mysql"
 	"github.com/luyasr/gaia/validator"
 	"github.com/luyasr/mpush/apps/user"
+	"github.com/rs/xid"
 	"gorm.io/gorm"
+	"time"
 )
 
 const (
@@ -65,12 +67,22 @@ func (c *Controller) Login(ctx context.Context, req *LoginReq) (*Tk, error) {
 	// 查询用户是否已经登录
 	byUserId, _ := c.FindByUserId(ctx, byUsername.Id)
 
-	token := NewToken(byUsername.Id)
-
+	// 如果用户已经登录, 则更新token
 	if byUserId != nil {
 		// TODO: 更新token
+		byUserId.AccessToken = xid.New().String()
+		byUserId.UpdatedAt = time.Now().Unix()
+		if err := c.update(ctx, byUserId); err != nil {
+			return nil, err
+		}
+		return &Tk{
+			AccessToken:  byUserId.AccessToken,
+			RefreshToken: byUserId.RefreshToken,
+		}, nil
 	}
 
+	// 创建token
+	token := NewToken(byUsername.Id)
 	// 创建token
 	return c.login(ctx, token)
 }

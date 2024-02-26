@@ -41,7 +41,7 @@ func (c *Controller) login(ctx context.Context, token *Token) (*Tk, error) {
 	}
 
 	tk := &Tk{
-		Token:        token.AccessToken,
+		AccessToken:  token.AccessToken,
 		RefreshToken: token.RefreshToken,
 	}
 
