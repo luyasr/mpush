@@ -28,7 +28,7 @@ func init() {
 }
 
 func (c *Controller) Init() error {
-	c.db = ioc.Container.Get(ioc.DbNamespace, mysql.Name).(*mysql.Mysql).Client
+	c.db = mysql.DB()
 
 	return nil
 }

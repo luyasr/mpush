@@ -28,3 +28,28 @@ CREATE TABLE `token` (
                          PRIMARY KEY (`id`),
                          UNIQUE KEY `idx_token_deleted_at` (`access_token`,`deleted_at`) USING BTREE COMMENT '联合索引'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `message` (
+                           `id` bigint NOT NULL AUTO_INCREMENT COMMENT '自增主键',
+                           `user_id` bigint NOT NULL COMMENT '用户id',
+                           `channel` tinyint NOT NULL COMMENT '通道',
+                           `title` varchar(255) DEFAULT NULL COMMENT '标题',
+                           `content` text COMMENT '内容',
+                           `status` tinyint NOT NULL COMMENT '状态',
+                           `created_at` bigint NOT NULL COMMENT '创建时间',
+                           `updated_at` bigint NOT NULL COMMENT '更新时间',
+                           PRIMARY KEY (`id`),
+                           UNIQUE KEY `idx_userid` (`user_id`) USING BTREE,
+                           UNIQUE KEY `idx_channel` (`channel`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `channel` (
+                           `id` bigint NOT NULL AUTO_INCREMENT COMMENT '自增主键',
+                           `name` varchar(255) DEFAULT NULL COMMENT '通道名称',
+                           `user_id` bigint NOT NULL COMMENT '用户id',
+                           `url` varchar(255) DEFAULT NULL COMMENT '通道地址',
+                           `secret` varchar(255) DEFAULT NULL COMMENT '通道密钥',
+                           `created_at` bigint NOT NULL COMMENT '创建时间',
+                           `updated_at` bigint NOT NULL COMMENT '更新时间',
+                           PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

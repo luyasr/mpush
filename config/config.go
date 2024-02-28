@@ -2,10 +2,10 @@ package config
 
 import (
 	"fmt"
-
 	"github.com/luyasr/gaia/config"
 	"github.com/luyasr/gaia/ioc"
 	"github.com/luyasr/gaia/log"
+	"github.com/luyasr/gaia/stores/kafka"
 	"github.com/luyasr/gaia/stores/mysql"
 )
 
@@ -18,6 +18,7 @@ var Cfg = new(Config)
 type Config struct {
 	Http  Http          `json:"http"`
 	Mysql *mysql.Config `json:"mysql"`
+	Kafka *kafka.Config `json:"kafka"`
 }
 
 type Http struct {

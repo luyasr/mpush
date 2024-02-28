@@ -34,7 +34,7 @@ func init() {
 }
 
 func (c *Controller) Init() error {
-	c.db = ioc.Container.Get(ioc.DbNamespace, mysql.Name).(*mysql.Mysql).Client
+	c.db = mysql.DB()
 	c.log = log.NewHelper(zerolog.DefaultLogger)
 	c.user = ioc.Container.Get(ioc.ControllerNamespace, user.Name).(user.Service)
 

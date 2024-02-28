@@ -3,8 +3,10 @@ module github.com/luyasr/mpush
 go 1.21.7
 
 require (
-	github.com/luyasr/gaia v0.0.0-20240226074919-2611b0f48944
+	github.com/goccy/go-json v0.10.2
+	github.com/luyasr/gaia v0.0.0-20240228022644-d4c8a0a816c9
 	github.com/rs/xid v1.5.0
+	github.com/segmentio/kafka-go v0.4.47
 	github.com/swaggo/swag v1.16.3
 )
 
@@ -25,11 +27,11 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.18.0 // indirect
 	github.com/go-sql-driver/mysql v1.7.1 // indirect
-	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
+	github.com/klauspost/compress v1.17.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.7 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible // indirect
@@ -39,6 +41,7 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
+	github.com/pierrec/lz4/v4 v4.1.15 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rs/zerolog v1.32.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect

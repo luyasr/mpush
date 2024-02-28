@@ -6,3 +6,6 @@ mysql:
   password: 12345678
   database: mpush
   logLevel: info
+
+kafka:
+  brokers: 10.10.0.103:9094

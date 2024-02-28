@@ -14,3 +14,14 @@ const (
 	// ChannelSMS 短信消息
 	ChannelSMS
 )
+
+type Status int
+
+const (
+	// StatusUnsent 未发送
+	StatusUnsent Status = iota
+	// StatusSent 已发送
+	StatusSent
+	// StatusFailed 发送失败
+	StatusFailed
+)
