@@ -4,7 +4,7 @@ go 1.21.7
 
 require (
 	github.com/goccy/go-json v0.10.2
-	github.com/luyasr/gaia v0.0.0-20240228022644-d4c8a0a816c9
+	github.com/luyasr/gaia v0.0.0-20240229093906-9014cc9a4352
 	github.com/rs/xid v1.5.0
 	github.com/segmentio/kafka-go v0.4.47
 	github.com/swaggo/swag v1.16.3

@@ -2,6 +2,8 @@ package message
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"github.com/luyasr/gaia/ioc"
 	"github.com/luyasr/gaia/stores/kafka"
 	"github.com/luyasr/gaia/stores/mysql"
@@ -25,7 +27,7 @@ func init() {
 
 func (c *Controller) Init() error {
 	c.db = mysql.DB()
-	c.reader = kafka.Consumer(Name)
+	c.reader = kafka.ConsumerGroup(Name, fmt.Sprintf("%s-consumer-group", Name))
 	c.writer = kafka.Producer(Name)
 	return nil
 }
@@ -34,7 +36,7 @@ func (c *Controller) Name() string {
 	return Name
 }
 
-func (c *Controller) ClientSend(ctx context.Context, req *ClientSendReq) error {
+func (c *Controller) Producer(ctx context.Context, req *ProducerReq) error {
 	if err := validator.Struct(req); err != nil {
 		return err
 	}
@@ -47,7 +49,7 @@ func (c *Controller) ClientSend(ctx context.Context, req *ClientSendReq) error {
 	message.CreatedAt = now
 	message.UpdatedAt = now
 
-	return c.clientSend(ctx, message)
+	return c.producer(ctx, message)
 }
 
 func (c *Controller) Query(ctx context.Context, req *QueryReq) (*Messages, error) {
@@ -86,5 +88,24 @@ func (c *Controller) Query(ctx context.Context, req *QueryReq) (*Messages, error
 	return messages, nil
 }
 
-func (c *Controller) Read() {
+func (c *Controller) Consumer(ctx context.Context) error {
+	for {
+		m, err := c.reader.ReadMessage(ctx)
+		if err != nil {
+			return err
+		}
+
+		message := new(Message)
+		if err := json.Unmarshal(m.Value, message); err != nil {
+			return err
+		}
+
+		if err := c.Create(ctx, message); err != nil {
+			return err
+		}
+	}
+}
+
+func (c *Controller) Create(ctx context.Context, message *Message) error {
+	return c.create(ctx, message)
 }

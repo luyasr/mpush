@@ -1,4 +1,69 @@
 definitions:
+  channel.Channel:
+    properties:
+      created_at:
+        description: CreatedAt 创建时间
+        type: integer
+      id:
+        description: Id 频道ID
+        type: integer
+      name:
+        description: Name 频道名称
+        type: string
+      secret:
+        description: Secret 频道密钥
+        type: string
+      token:
+        description: Token 频道token
+        type: string
+      updated_at:
+        description: UpdatedAt 更新时间
+        type: integer
+      url:
+        description: Url 频道地址
+        type: string
+      user_id:
+        description: UserId 用户ID
+        type: integer
+    type: object
+  channel.Channels:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/channel.Channel'
+        type: array
+      total:
+        type: integer
+    type: object
+  channel.CreateReq:
+    properties:
+      name:
+        type: string
+      secret:
+        type: string
+      url:
+        type: string
+    required:
+    - name
+    type: object
+  channel.QueryReq:
+    properties:
+      keywords:
+        type: string
+      page_number:
+        type: integer
+      page_size:
+        type: integer
+    type: object
+  channel.UpdateReq:
+    properties:
+      name:
+        type: string
+      secret:
+        type: string
+      url:
+        type: string
+    type: object
   token.LoginReq:
     properties:
       password:
@@ -13,15 +78,15 @@ definitions:
     type: object
   token.Tk:
     properties:
+      access_token:
+        description: 登录token
+        type: string
       refresh_token:
         description: 刷新token
         type: string
-      token:
-        description: 登录token
-        type: string
     required:
+    - access_token
     - refresh_token
-    - token
     type: object
   user.CreateReq:
     properties:
@@ -39,19 +104,19 @@ definitions:
     - password
     - username
     type: object
-  user.FindBy:
+  user.QueryBy:
     enum:
     - 0
     - 1
     type: integer
     x-enum-varnames:
-    - FindById
-    - FindByUsername
-  user.FindReq:
+    - QueryById
+    - QueryByUsername
+  user.QueryReq:
     properties:
-      find_by:
+      query_by:
         allOf:
-        - $ref: '#/definitions/user.FindBy'
+        - $ref: '#/definitions/user.QueryBy'
         description: 查询条件
       value:
         description: 查询值
@@ -114,6 +179,89 @@ definitions:
 info:
   contact: {}
 paths:
+  /api/v1/channel/create:
+    post:
+      consumes:
+      - application/json
+      description: 创建频道
+      parameters:
+      - description: 创建频道请求参数
+        in: body
+        name: Object
+        required: true
+        schema:
+          $ref: '#/definitions/channel.CreateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/channel.Channel'
+      summary: 创建频道
+      tags:
+      - channel
+  /api/v1/channel/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除频道
+      parameters:
+      - description: 频道ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: 删除频道
+      tags:
+      - channel
+  /api/v1/channel/query:
+    post:
+      consumes:
+      - application/json
+      description: 查询频道
+      parameters:
+      - description: 查询频道请求参数
+        in: body
+        name: Object
+        required: true
+        schema:
+          $ref: '#/definitions/channel.QueryReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/channel.Channels'
+      summary: 查询频道
+      tags:
+      - channel
+  /api/v1/channel/update:
+    post:
+      consumes:
+      - application/json
+      description: 更新频道
+      parameters:
+      - description: 更新频道请求参数
+        in: body
+        name: Object
+        required: true
+        schema:
+          $ref: '#/definitions/channel.UpdateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: 更新频道
+      tags:
+      - channel
   /api/v1/token/login:
     post:
       consumes:
@@ -188,7 +336,7 @@ paths:
         in: body
         name: Object
         schema:
-          $ref: '#/definitions/user.FindReq'
+          $ref: '#/definitions/user.QueryReq'
       produces:
       - application/json
       responses:

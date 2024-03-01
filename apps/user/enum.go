@@ -14,9 +14,9 @@ const (
 	RoleAdmin
 )
 
-type FindBy int
+type QueryBy int
 
 const (
-	FindById FindBy = iota
-	FindByUsername
+	QueryById QueryBy = iota
+	QueryByUsername
 )

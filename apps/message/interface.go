@@ -3,12 +3,17 @@ package message
 import "context"
 
 type Service interface {
-	// ClientSend 客户端发送消息
-	ClientSend(ctx context.Context, req *ClientSendReq) error
+	// Producer 客户端发送消息
+	Producer(ctx context.Context, req *ProducerReq) error
+	// Consumer 服务端消费消息
+	Consumer(ctx context.Context) error
+	// Create 创建消息
+	Create(ctx context.Context, message *Message) error
+	// Query 查询消息
 	Query(ctx context.Context, req *QueryReq) (*Messages, error)
 }
 
-type ClientSendReq struct {
+type ProducerReq struct {
 	Title   string `json:"title" validate:"required"`
 	Content string `json:"content" validate:"required"`
 }

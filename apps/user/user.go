@@ -44,11 +44,11 @@ func (c *Controller) Create(ctx context.Context, req *CreateReq) (*User, error) 
 	}
 
 	// 查询用户是否已经存在
-	findUserReq := &FindReq{
-		FindBy: FindByUsername,
-		Value:  req.Username,
+	queryUserReq := &QueryReq{
+		QueryBy: QueryByUsername,
+		Value:   req.Username,
 	}
-	byUsername, _ := c.Find(ctx, findUserReq)
+	byUsername, _ := c.Query(ctx, queryUserReq)
 	if byUsername != nil {
 		return nil, errors.BadRequest("", userAlreadyExists, req.Username)
 	}
@@ -67,16 +67,16 @@ func (c *Controller) Create(ctx context.Context, req *CreateReq) (*User, error) 
 	return c.create(ctx, user)
 }
 
-func (c *Controller) Find(ctx context.Context, req *FindReq) (*User, error) {
-	switch req.FindBy {
-	case FindById:
+func (c *Controller) Query(ctx context.Context, req *QueryReq) (*User, error) {
+	switch req.QueryBy {
+	case QueryById:
 		id, err := strconv.ParseInt(req.Value, 10, 64)
 		if err != nil {
 			return nil, errors.BadRequest("", err.Error())
 		}
-		return c.findById(ctx, id)
-	case FindByUsername:
-		return c.findByUsername(ctx, req.Value)
+		return c.queryById(ctx, id)
+	case QueryByUsername:
+		return c.queryByUsername(ctx, req.Value)
 	}
 
 	return nil, nil

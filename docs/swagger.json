@@ -4,6 +4,134 @@
         "contact": {}
     },
     "paths": {
+        "/api/v1/channel/create": {
+            "post": {
+                "description": "创建频道",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "channel"
+                ],
+                "summary": "创建频道",
+                "parameters": [
+                    {
+                        "description": "创建频道请求参数",
+                        "name": "Object",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/channel.CreateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/channel.Channel"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/channel/delete/{id}": {
+            "delete": {
+                "description": "删除频道",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "channel"
+                ],
+                "summary": "删除频道",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "频道ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/channel/query": {
+            "post": {
+                "description": "查询频道",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "channel"
+                ],
+                "summary": "查询频道",
+                "parameters": [
+                    {
+                        "description": "查询频道请求参数",
+                        "name": "Object",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/channel.QueryReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/channel.Channels"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/channel/update": {
+            "post": {
+                "description": "更新频道",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "channel"
+                ],
+                "summary": "更新频道",
+                "parameters": [
+                    {
+                        "description": "更新频道请求参数",
+                        "name": "Object",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/channel.UpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/api/v1/token/login": {
             "post": {
                 "description": "登录",
@@ -122,7 +250,7 @@
                         "name": "Object",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/user.FindReq"
+                            "$ref": "#/definitions/user.QueryReq"
                         }
                     }
                 ],
@@ -169,6 +297,102 @@
         }
     },
     "definitions": {
+        "channel.Channel": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "description": "CreatedAt 创建时间",
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "Id 频道ID",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "Name 频道名称",
+                    "type": "string"
+                },
+                "secret": {
+                    "description": "Secret 频道密钥",
+                    "type": "string"
+                },
+                "token": {
+                    "description": "Token 频道token",
+                    "type": "string"
+                },
+                "updated_at": {
+                    "description": "UpdatedAt 更新时间",
+                    "type": "integer"
+                },
+                "url": {
+                    "description": "Url 频道地址",
+                    "type": "string"
+                },
+                "user_id": {
+                    "description": "UserId 用户ID",
+                    "type": "integer"
+                }
+            }
+        },
+        "channel.Channels": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/channel.Channel"
+                    }
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "channel.CreateReq": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "secret": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "channel.QueryReq": {
+            "type": "object",
+            "properties": {
+                "keywords": {
+                    "type": "string"
+                },
+                "page_number": {
+                    "type": "integer"
+                },
+                "page_size": {
+                    "type": "integer"
+                }
+            }
+        },
+        "channel.UpdateReq": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "secret": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
         "token.LoginReq": {
             "type": "object",
             "required": [
@@ -189,16 +413,16 @@
         "token.Tk": {
             "type": "object",
             "required": [
-                "refresh_token",
-                "token"
+                "access_token",
+                "refresh_token"
             ],
             "properties": {
-                "refresh_token": {
-                    "description": "刷新token",
+                "access_token": {
+                    "description": "登录token",
                     "type": "string"
                 },
-                "token": {
-                    "description": "登录token",
+                "refresh_token": {
+                    "description": "刷新token",
                     "type": "string"
                 }
             }
@@ -224,25 +448,25 @@
                 }
             }
         },
-        "user.FindBy": {
+        "user.QueryBy": {
             "type": "integer",
             "enum": [
                 0,
                 1
             ],
             "x-enum-varnames": [
-                "FindById",
-                "FindByUsername"
+                "QueryById",
+                "QueryByUsername"
             ]
         },
-        "user.FindReq": {
+        "user.QueryReq": {
             "type": "object",
             "properties": {
-                "find_by": {
+                "query_by": {
                     "description": "查询条件",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/user.FindBy"
+                            "$ref": "#/definitions/user.QueryBy"
                         }
                     ]
                 },

@@ -3,8 +3,8 @@ package token
 import "context"
 
 type Service interface {
-	FindByUserId(ctx context.Context, userId int64) (*Token, error)
-	FindByToken(ctx context.Context, token string) (*Token, error)
+	QueryByUserId(ctx context.Context, userId int64) (*Token, error)
+	QueryByToken(ctx context.Context, token string) (*Token, error)
 	// Login 登录
 	Login(ctx context.Context, req *LoginReq) (*Tk, error)
 	// Logout 登出

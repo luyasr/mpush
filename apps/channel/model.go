@@ -20,9 +20,9 @@ type Channel struct {
 	// Secret 频道密钥
 	Secret string `json:"secret"`
 	// CreatedAt 创建时间
-	CreatedAt string `json:"created_at"`
+	CreatedAt int64 `json:"created_at"`
 	// UpdatedAt 更新时间
-	UpdatedAt string `json:"updated_at"`
+	UpdatedAt int64 `json:"updated_at"`
 }
 
 func (Channel) TableName() string {

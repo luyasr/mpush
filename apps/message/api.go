@@ -26,25 +26,29 @@ func (h *Handler) Name() string {
 func (h *Handler) Registry(r gin.IRouter) {
 	r = r.Group("/message")
 	{
-		r.POST(".", h.Send)
-		r.GET(".", h.Read)
+		r.POST(".", h.Producer)
 	}
 }
 
-func (h *Handler) Send(c *gin.Context) {
-	req := new(ClientSendReq)
+// Producer 客户端发送消息
+// @Summary 客户端发送消息
+// @Description 客户端发送消息
+// @Tags message
+// @Accept json
+// @Produce json
+// @Param req body ProducerReq true "请求"
+// @Success 200 {object} interface{} "成功"
+// @Router /api/v1/message [post]
+func (h *Handler) Producer(c *gin.Context) {
+	req := new(ProducerReq)
 	if err := c.BindJSON(req); err != nil {
 		response.GinJsonWithError(c, err)
 		return
 	}
-	if err := h.controller.ClientSend(c, req); err != nil {
+	if err := h.controller.Producer(c, req); err != nil {
 		response.GinJsonWithError(c, err)
 		return
 	}
 
 	response.GinJson(c, nil)
-}
-
-func (h *Handler) Read(c *gin.Context) {
-	h.controller.Read()
 }

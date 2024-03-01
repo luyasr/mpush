@@ -15,7 +15,7 @@ func (c *Controller) create(ctx context.Context, u *User) (*User, error) {
 	return u, nil
 }
 
-func (c *Controller) findById(ctx context.Context, id int64) (*User, error) {
+func (c *Controller) queryById(ctx context.Context, id int64) (*User, error) {
 	user := new(User)
 	tx := c.db.WithContext(ctx).Where("id = ?", id).First(user)
 
@@ -29,7 +29,7 @@ func (c *Controller) findById(ctx context.Context, id int64) (*User, error) {
 	return user, nil
 }
 
-func (c *Controller) findByUsername(ctx context.Context, username string) (*User, error) {
+func (c *Controller) queryByUsername(ctx context.Context, username string) (*User, error) {
 	user := new(User)
 	tx := c.db.WithContext(ctx).Where("username = ?", username).First(user)
 	if err := tx.Error; err != nil {

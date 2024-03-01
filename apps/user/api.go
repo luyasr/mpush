@@ -63,17 +63,17 @@ func (h *Handler) Create(c *gin.Context) {
 // @Tags 用户
 // @Accept json
 // @Produce json
-// @Param Object body FindReq false "查询用户请求参数"
+// @Param Object body QueryReq false "查询用户请求参数"
 // @Success 200 {object} User
 // @Router /api/v1/user [get]
 func (h *Handler) Find(c *gin.Context) {
-	req := new(FindReq)
+	req := new(QueryReq)
 	if err := c.BindJSON(req); err != nil {
 		response.GinJsonWithError(c, err)
 		return
 	}
 
-	user, err := h.controller.Find(c, req)
+	user, err := h.controller.Query(c, req)
 	if err != nil {
 		response.GinJsonWithError(c, err)
 		return

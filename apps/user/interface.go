@@ -4,7 +4,7 @@ import "context"
 
 type Service interface {
 	Create(ctx context.Context, req *CreateReq) (*User, error)
-	Find(ctx context.Context, req *FindReq) (*User, error)
+	Query(ctx context.Context, req *QueryReq) (*User, error)
 	Delete(ctx context.Context, id int64) error
 }
 
@@ -16,10 +16,10 @@ type CreateReq struct {
 	Password string `json:"password" validate:"required,min=6,max=20" label:"密码"`
 }
 
-// FindReq 查询用户请求
-type FindReq struct {
+// QueryReq 查询用户请求
+type QueryReq struct {
 	// 查询条件
-	FindBy FindBy `json:"find_by"`
+	QueryBy QueryBy `json:"query_by"`
 	// 查询值
 	Value string `json:"value"`
 }

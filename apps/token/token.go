@@ -45,27 +45,27 @@ func (c *Controller) Name() string {
 	return Name
 }
 
-func (c *Controller) FindByUserId(ctx context.Context, userId int64) (*Token, error) {
+func (c *Controller) QueryByUserId(ctx context.Context, userId int64) (*Token, error) {
 	return c.findByUserId(ctx, userId)
 }
 
-func (c *Controller) FindByToken(ctx context.Context, token string) (*Token, error) {
+func (c *Controller) QueryByToken(ctx context.Context, token string) (*Token, error) {
 	return c.findByToken(ctx, token)
 }
 
 func (c *Controller) Login(ctx context.Context, req *LoginReq) (*Tk, error) {
 	// 查询用户是否存在
-	findUserReq := &user.FindReq{
-		FindBy: user.FindByUsername,
-		Value:  req.Username,
+	findUserReq := &user.QueryReq{
+		QueryBy: user.QueryByUsername,
+		Value:   req.Username,
 	}
-	byUsername, err := c.user.Find(ctx, findUserReq)
+	byUsername, err := c.user.Query(ctx, findUserReq)
 	if err != nil {
 		return nil, err
 	}
 
 	// 查询用户是否已经登录
-	byUserId, _ := c.FindByUserId(ctx, byUsername.Id)
+	byUserId, _ := c.QueryByUserId(ctx, byUsername.Id)
 
 	// 如果用户已经登录, 则更新token
 	if byUserId != nil {
