@@ -53,6 +53,10 @@ func (c *Controller) QueryByToken(ctx context.Context, token string) (*Token, er
 	return c.findByToken(ctx, token)
 }
 
+func (c *Controller) QueryByARToken(ctx context.Context, req *Tk) (*Token, error) {
+	return c.findByARToken(ctx, req.AccessToken, req.RefreshToken)
+}
+
 func (c *Controller) Login(ctx context.Context, req *LoginReq) (*Tk, error) {
 	// 查询用户是否存在
 	findUserReq := &user.QueryReq{
@@ -84,11 +88,16 @@ func (c *Controller) Login(ctx context.Context, req *LoginReq) (*Tk, error) {
 	// 创建token
 	token := NewToken(byUsername.Id)
 	// 创建token
-	return c.login(ctx, token)
+	return c.create(ctx, token)
 }
 
 func (c *Controller) Logout(ctx context.Context, req *Tk) error {
-	return nil
+	byARToken, err := c.findByARToken(ctx, req.AccessToken, req.RefreshToken)
+	if err != nil {
+		return err
+	}
+
+	return c.delete(ctx, byARToken)
 }
 
 func (c *Controller) Refresh(ctx context.Context, req *Tk) (string, error) {

@@ -21,7 +21,7 @@ func (c *Controller) queryById(ctx context.Context, id int64) (*User, error) {
 
 	if err := tx.Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, errors.NotFound("", userNotFound, id)
+			return nil, errors.NotFound(invalid, userNotFound, id)
 		}
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (c *Controller) queryByUsername(ctx context.Context, username string) (*Use
 	tx := c.db.WithContext(ctx).Where("username = ?", username).First(user)
 	if err := tx.Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, errors.NotFound("", userNotFound, username)
+			return nil, errors.NotFound(invalid, userNotFound, username)
 		}
 		return nil, err
 	}

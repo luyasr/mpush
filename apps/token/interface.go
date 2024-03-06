@@ -1,10 +1,13 @@
 package token
 
-import "context"
+import (
+	"context"
+)
 
 type Service interface {
 	QueryByUserId(ctx context.Context, userId int64) (*Token, error)
 	QueryByToken(ctx context.Context, token string) (*Token, error)
+	QueryByARToken(ctx context.Context, req *Tk) (*Token, error)
 	// Login 登录
 	Login(ctx context.Context, req *LoginReq) (*Tk, error)
 	// Logout 登出
@@ -28,4 +31,10 @@ type Tk struct {
 	AccessToken string `json:"access_token" validate:"required" label:"登录token"`
 	// 刷新token
 	RefreshToken string `json:"refresh_token" validate:"required" label:"刷新token"`
+}
+
+// QueryReq 查询请求
+type QueryReq struct {
+	QueryBy QueryBy `json:"query_by"`
+	Value   string  `json:"value"`
 }

@@ -67,6 +67,18 @@ func (h *Handler) Login(c *gin.Context) {
 // @Success 200
 // @Router /api/v1/token/logout [post]
 func (h *Handler) Logout(c *gin.Context) {
+	req := new(Tk)
+	if err := c.BindJSON(req); err != nil {
+		response.GinJsonWithError(c, err)
+		return
+	}
+
+	if err := h.controller.Logout(c, req); err != nil {
+		response.GinJsonWithError(c, err)
+		return
+	}
+
+	response.GinJson(c, nil)
 }
 
 // Refresh 刷新

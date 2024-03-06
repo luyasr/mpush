@@ -13,6 +13,7 @@ import (
 )
 
 const (
+	invalid           = "无效的用户名或密码"
 	userNotFound      = "user %v not found"
 	userAlreadyExists = "user %v already exists"
 )
