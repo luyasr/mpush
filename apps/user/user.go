@@ -7,8 +7,8 @@ import (
 	"github.com/luyasr/gaia/ioc"
 	"github.com/luyasr/gaia/stores/mysql"
 	"github.com/luyasr/gaia/validator"
+	"github.com/luyasr/mpush/apps/token"
 	"gorm.io/gorm"
-	"strconv"
 	"time"
 )
 
@@ -21,7 +21,8 @@ const (
 var _ Service = (*Controller)(nil)
 
 type Controller struct {
-	db *gorm.DB
+	tokenController *token.Controller
+	db              *gorm.DB
 }
 
 func init() {
@@ -30,6 +31,7 @@ func init() {
 
 func (c *Controller) Init() error {
 	c.db = mysql.DB()
+	c.tokenController = ioc.Container.Get(ioc.ControllerNamespace, token.Name).(*token.Controller)
 
 	return nil
 }
@@ -45,11 +47,7 @@ func (c *Controller) Create(ctx context.Context, req *CreateReq) (*User, error) 
 	}
 
 	// 查询用户是否已经存在
-	queryUserReq := &QueryReq{
-		QueryBy: QueryByUsername,
-		Value:   req.Username,
-	}
-	byUsername, _ := c.Query(ctx, queryUserReq)
+	byUsername, _ := c.queryByUsername(ctx, req.Username)
 	if byUsername != nil {
 		return nil, errors.BadRequest("", userAlreadyExists, req.Username)
 	}
@@ -68,19 +66,13 @@ func (c *Controller) Create(ctx context.Context, req *CreateReq) (*User, error) 
 	return c.create(ctx, user)
 }
 
-func (c *Controller) Query(ctx context.Context, req *QueryReq) (*User, error) {
-	switch req.QueryBy {
-	case QueryById:
-		id, err := strconv.ParseInt(req.Value, 10, 64)
-		if err != nil {
-			return nil, errors.BadRequest("", err.Error())
-		}
-		return c.queryById(ctx, id)
-	case QueryByUsername:
-		return c.queryByUsername(ctx, req.Value)
-	}
+func (c *Controller) Query(ctx context.Context) (*User, error) {
 
-	return nil, nil
+	return c.queryById(ctx, 1)
+}
+
+func (c *Controller) QueryByUsername(ctx context.Context, username string) (*User, error) {
+	return c.queryByUsername(ctx, username)
 }
 
 func (c *Controller) Delete(ctx context.Context, id int64) error {

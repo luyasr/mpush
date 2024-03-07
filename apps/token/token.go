@@ -59,11 +59,7 @@ func (c *Controller) QueryByARToken(ctx context.Context, req *Tk) (*Token, error
 
 func (c *Controller) Login(ctx context.Context, req *LoginReq) (*Tk, error) {
 	// 查询用户是否存在
-	findUserReq := &user.QueryReq{
-		QueryBy: user.QueryByUsername,
-		Value:   req.Username,
-	}
-	byUsername, err := c.user.Query(ctx, findUserReq)
+	byUsername, err := c.user.QueryByUsername(ctx, req.Username)
 	if err != nil {
 		return nil, err
 	}
@@ -119,4 +115,8 @@ func (c *Controller) Validate(ctx context.Context, token string) (*Token, error)
 	}
 
 	return byToken, nil
+}
+
+func (c *Controller) GetTokenByContext(ctx context.Context) *Token {
+	return ctx.Value(Name).(*Token)
 }

@@ -4,7 +4,8 @@ import "context"
 
 type Service interface {
 	Create(ctx context.Context, req *CreateReq) (*User, error)
-	Query(ctx context.Context, req *QueryReq) (*User, error)
+	Query(ctx context.Context) (*User, error)
+	QueryByUsername(ctx context.Context, username string) (*User, error)
 	Delete(ctx context.Context, id int64) error
 }
 
