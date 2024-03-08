@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/channel/create": {
+        "/api/v1/channel": {
             "post": {
                 "description": "创建频道",
                 "consumes": [
@@ -78,7 +78,36 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/channel/query": {
+        "/api/v1/channel/{id}": {
+            "put": {
+                "description": "更新频道",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "channel"
+                ],
+                "summary": "更新频道",
+                "parameters": [
+                    {
+                        "description": "更新频道请求参数",
+                        "name": "Object",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/channel.UpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
             "post": {
                 "description": "查询频道",
                 "consumes": [
@@ -112,9 +141,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/channel/update": {
+        "/api/v1/message": {
             "post": {
-                "description": "更新频道",
+                "description": "客户端发送消息",
                 "consumes": [
                     "application/json"
                 ],
@@ -122,23 +151,26 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "channel"
+                    "message"
                 ],
-                "summary": "更新频道",
+                "summary": "客户端发送消息",
                 "parameters": [
                     {
-                        "description": "更新频道请求参数",
-                        "name": "Object",
+                        "description": "请求",
+                        "name": "req",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/channel.UpdateReq"
+                            "$ref": "#/definitions/message.ProducerReq"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "成功",
+                        "schema": {
+                            "type": "object"
+                        }
                     }
                 }
             }
@@ -243,37 +275,6 @@ const docTemplate = `{
             }
         },
         "/api/v1/user": {
-            "get": {
-                "description": "查询用户",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "用户"
-                ],
-                "summary": "查询用户",
-                "parameters": [
-                    {
-                        "description": "查询用户请求参数",
-                        "name": "Object",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/user.QueryReq"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/user.User"
-                        }
-                    }
-                }
-            },
             "post": {
                 "description": "创建用户",
                 "consumes": [
@@ -302,6 +303,65 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/user.User"
                         }
+                    }
+                }
+            }
+        },
+        "/api/v1/user/{id}": {
+            "get": {
+                "description": "查询用户",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "查询用户",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.User"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "删除用户",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "删除用户",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     }
                 }
             }
@@ -404,6 +464,21 @@ const docTemplate = `{
                 }
             }
         },
+        "message.ProducerReq": {
+            "type": "object",
+            "required": [
+                "content",
+                "title"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "token.LoginReq": {
             "type": "object",
             "required": [
@@ -456,34 +531,6 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 20,
                     "minLength": 3
-                }
-            }
-        },
-        "user.QueryBy": {
-            "type": "integer",
-            "enum": [
-                0,
-                1
-            ],
-            "x-enum-varnames": [
-                "QueryById",
-                "QueryByUsername"
-            ]
-        },
-        "user.QueryReq": {
-            "type": "object",
-            "properties": {
-                "query_by": {
-                    "description": "查询条件",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/user.QueryBy"
-                        }
-                    ]
-                },
-                "value": {
-                    "description": "查询值",
-                    "type": "string"
                 }
             }
         },

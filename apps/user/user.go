@@ -7,7 +7,6 @@ import (
 	"github.com/luyasr/gaia/ioc"
 	"github.com/luyasr/gaia/stores/mysql"
 	"github.com/luyasr/gaia/validator"
-	"github.com/luyasr/mpush/apps/token"
 	"gorm.io/gorm"
 	"time"
 )
@@ -21,8 +20,7 @@ const (
 var _ Service = (*Controller)(nil)
 
 type Controller struct {
-	tokenController *token.Controller
-	db              *gorm.DB
+	db *gorm.DB
 }
 
 func init() {
@@ -31,7 +29,6 @@ func init() {
 
 func (c *Controller) Init() error {
 	c.db = mysql.DB()
-	c.tokenController = ioc.Container.Get(ioc.ControllerNamespace, token.Name).(*token.Controller)
 
 	return nil
 }
@@ -66,13 +63,25 @@ func (c *Controller) Create(ctx context.Context, req *CreateReq) (*User, error) 
 	return c.create(ctx, user)
 }
 
-func (c *Controller) Query(ctx context.Context) (*User, error) {
-
-	return c.queryById(ctx, 1)
+func (c *Controller) QueryById(ctx context.Context, id int64) (*User, error) {
+	return c.queryById(ctx, id)
 }
 
 func (c *Controller) QueryByUsername(ctx context.Context, username string) (*User, error) {
 	return c.queryByUsername(ctx, username)
+}
+
+func (c *Controller) QueryByUsernameAndPassword(ctx context.Context, username, password string) (*User, error) {
+	user, err := c.queryByUsername(ctx, username)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := bcrypt.ComparePassword(password, user.Password); err != nil {
+		return nil, errors.BadRequest(invalid, invalid)
+	}
+
+	return user, nil
 }
 
 func (c *Controller) Delete(ctx context.Context, id int64) error {

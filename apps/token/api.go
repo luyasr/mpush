@@ -7,7 +7,7 @@ import (
 )
 
 type Handler struct {
-	controller *Controller
+	service Service
 }
 
 func init() {
@@ -15,7 +15,7 @@ func init() {
 }
 
 func (h *Handler) Init() error {
-	h.controller = ioc.Container.Get(ioc.ControllerNamespace, Name).(*Controller)
+	h.service = ioc.Container.Get(ioc.ControllerNamespace, Name).(Service)
 	return nil
 }
 
@@ -48,7 +48,7 @@ func (h *Handler) Login(c *gin.Context) {
 		return
 	}
 
-	tk, err := h.controller.Login(c, req)
+	tk, err := h.service.Login(c, req)
 	if err != nil {
 		response.GinJsonWithError(c, err)
 		return
@@ -73,7 +73,7 @@ func (h *Handler) Logout(c *gin.Context) {
 		return
 	}
 
-	if err := h.controller.Logout(c, req); err != nil {
+	if err := h.service.Logout(c, req); err != nil {
 		response.GinJsonWithError(c, err)
 		return
 	}

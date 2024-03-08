@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"github.com/luyasr/gaia/crypto/bcrypt"
 	"github.com/luyasr/gaia/errors"
 	"gorm.io/gorm"
 )
@@ -37,6 +38,23 @@ func (c *Controller) queryByUsername(ctx context.Context, username string) (*Use
 			return nil, errors.NotFound(invalid, userNotFound, username)
 		}
 		return nil, err
+	}
+
+	return user, nil
+}
+
+func (c *Controller) queryByUsernameAndPassword(ctx context.Context, username, password string) (*User, error) {
+	user := new(User)
+	tx := c.db.WithContext(ctx).Where("username = ?", username).First(user)
+	if err := tx.Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.NotFound(invalid, userNotFound, username)
+		}
+		return nil, err
+	}
+
+	if err := bcrypt.ComparePassword(password, user.Password); err != nil {
+		return nil, errors.BadRequest(invalid, invalid)
 	}
 
 	return user, nil

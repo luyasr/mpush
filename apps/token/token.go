@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	tokenInvalid  = "invalid token"
+	tokenInvalid  = "无效的token"
 	tokenNotFound = "%v token not found"
 	tokenExpired  = "%v token expired"
 )
@@ -58,18 +58,17 @@ func (c *Controller) QueryByARToken(ctx context.Context, req *Tk) (*Token, error
 }
 
 func (c *Controller) Login(ctx context.Context, req *LoginReq) (*Tk, error) {
-	// 查询用户是否存在
-	byUsername, err := c.user.QueryByUsername(ctx, req.Username)
+	//查询用户是否存在
+	u, err := c.user.QueryByUsernameAndPassword(ctx, req.Username, req.Password)
 	if err != nil {
 		return nil, err
 	}
 
 	// 查询用户是否已经登录
-	byUserId, _ := c.QueryByUserId(ctx, byUsername.Id)
+	byUserId, _ := c.QueryByUserId(ctx, u.Id)
 
 	// 如果用户已经登录, 则更新token
 	if byUserId != nil {
-		// TODO: 更新token
 		byUserId.AccessToken = xid.New().String()
 		byUserId.UpdatedAt = time.Now().Unix()
 		if err := c.update(ctx, byUserId); err != nil {
@@ -82,7 +81,7 @@ func (c *Controller) Login(ctx context.Context, req *LoginReq) (*Tk, error) {
 	}
 
 	// 创建token
-	token := NewToken(byUsername.Id)
+	token := NewToken(u.Id)
 	// 创建token
 	return c.create(ctx, token)
 }
@@ -92,7 +91,6 @@ func (c *Controller) Logout(ctx context.Context, req *Tk) error {
 	if err != nil {
 		return err
 	}
-
 	return c.delete(ctx, byARToken)
 }
 

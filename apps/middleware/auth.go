@@ -10,13 +10,13 @@ import (
 )
 
 type Auth struct {
-	token *token.Controller
+	token token.Service
 	Role  user.Role
 }
 
 func NewAuth() *Auth {
 	return &Auth{
-		token: ioc.Container.Get(ioc.ControllerNamespace, token.Name).(*token.Controller),
+		token: ioc.Container.Get(ioc.ControllerNamespace, token.Name).(token.Service),
 	}
 }
 

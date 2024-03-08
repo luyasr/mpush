@@ -28,9 +28,9 @@ func (h *Handler) Registry(r gin.IRouter) {
 	group := r.Group("/channel")
 	{
 		group.POST(".", h.Create)
-		group.PUT("/{:id}", h.Update)
-		group.DELETE("/{:id}", h.Delete)
-		group.POST("/{:id}", h.Query)
+		group.PUT(":id", h.Update)
+		group.DELETE(":id", h.Delete)
+		group.POST(":id", h.Query)
 	}
 }
 

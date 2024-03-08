@@ -13,10 +13,3 @@ const (
 	RoleAnonymous Role = iota
 	RoleAdmin
 )
-
-type QueryBy int
-
-const (
-	QueryById QueryBy = iota
-	QueryByUsername
-)

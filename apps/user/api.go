@@ -1,13 +1,15 @@
 package user
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/luyasr/gaia/ioc"
 	"github.com/luyasr/gaia/transport/http/response"
 )
 
 type Handler struct {
-	controller *Controller
+	service Service
 }
 
 func init() {
@@ -15,7 +17,7 @@ func init() {
 }
 
 func (h *Handler) Init() error {
-	h.controller = ioc.Container.Get(ioc.ControllerNamespace, Name).(*Controller)
+	h.service = ioc.Container.Get(ioc.ControllerNamespace, Name).(Service)
 
 	return nil
 }
@@ -28,7 +30,7 @@ func (h *Handler) Registry(r gin.IRouter) {
 	r = r.Group("/user")
 	{
 		r.POST(".", h.Create)
-		r.GET(".", h.Find)
+		r.GET(":id", h.Query)
 	}
 }
 
@@ -48,7 +50,7 @@ func (h *Handler) Create(c *gin.Context) {
 		return
 	}
 
-	user, err := h.controller.Create(c, req)
+	user, err := h.service.Create(c, req)
 	if err != nil {
 		response.GinJsonWithError(c, err)
 		return
@@ -57,27 +59,50 @@ func (h *Handler) Create(c *gin.Context) {
 	response.GinJson(c, user)
 }
 
-// Find 查询用户
+// Query 查询用户
 // @Summary 查询用户
 // @Description 查询用户
 // @Tags 用户
 // @Accept json
 // @Produce json
-// @Param Object body QueryReq false "查询用户请求参数"
+// @Param id path int true "用户ID"
 // @Success 200 {object} User
-// @Router /api/v1/user [get]
-func (h *Handler) Find(c *gin.Context) {
-	req := new(QueryReq)
-	if err := c.BindJSON(req); err != nil {
+// @Router /api/v1/user/{id} [get]
+func (h *Handler) Query(c *gin.Context) {
+	parseInt, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
 		response.GinJsonWithError(c, err)
 		return
 	}
-
-	user, err := h.controller.Query(c, req)
+	user, err := h.service.QueryById(c, parseInt)
 	if err != nil {
 		response.GinJsonWithError(c, err)
 		return
 	}
 
 	response.GinJson(c, user)
+}
+
+// Delete 删除用户
+// @Summary 删除用户
+// @Description 删除用户
+// @Tags 用户
+// @Accept json
+// @Produce json
+// @Param id path int true "用户ID"
+// @Success 200
+// @Router /api/v1/user/{id} [delete]
+func (h *Handler) Delete(c *gin.Context) {
+	parseInt, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		response.GinJsonWithError(c, err)
+		return
+	}
+
+	if err = h.service.Delete(c, parseInt); err != nil {
+		response.GinJsonWithError(c, err)
+		return
+	}
+
+	response.GinJson(c, nil)
 }
